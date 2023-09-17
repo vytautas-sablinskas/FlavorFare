@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\FlavorFare.API.props" />
+</Project>

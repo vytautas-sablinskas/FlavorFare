@@ -1,0 +1,14 @@
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\bin\Debug\net7.0\BiblioNest.Data.deps.json
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\bin\Debug\net7.0\BiblioNest.Data.dll
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\bin\Debug\net7.0\BiblioNest.Data.pdb
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\BiblioNest.Data.csproj.AssemblyReference.cache
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\BiblioNest.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\BiblioNest.Data.AssemblyInfoInputs.cache
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\BiblioNest.Data.AssemblyInfo.cs
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\BiblioNest.Data.csproj.CoreCompileInputs.cache
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\BiblioNest.Data.dll
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\refint\BiblioNest.Data.dll
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\BiblioNest.Data.pdb
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\ref\BiblioNest.Data.dll
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\bin\Debug\net7.0\BiblioNest.Data.runtimeconfig.json
+C:\Users\Vytautas\Desktop\Darbai\BiblioNest\BiblioNest\BiblioNest.Data\obj\Debug\net7.0\BiblioNest.Data.genruntimeconfig.cache
