@@ -113,7 +113,7 @@ namespace FlavorFare.API
             });
 
             services.AddDbContext<FlavorFareDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IRepository<Restaurant>, Repository<Restaurant>>();
             services.AddScoped<IRepository<Table>, Repository<Table>>();
