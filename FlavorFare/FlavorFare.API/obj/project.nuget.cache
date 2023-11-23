@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hYwP6VjhKK+VMojmekr5s/E5PGvXIveDXCevAX1gZV2MhdoRaXw+RYEDGMy9W/TLWLuOXPvZ9meqr2q4hYhlXw==",
+  "dgSpecHash": "EiBR97uZwtfK7Q78u7fa9AZcwVXsuRVYVUQTGEn2mIHgMgeG0+s4g+xcC6mXoTwYJqK+sldB4Ia/p39lFu6p6w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Vytautas\\Desktop\\Darbai\\FlavorFare\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
+  "projectFilePath": "C:\\Users\\Vytautas\\source\\repos\\github_flavorfare\\FlavorFare\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vytautas\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Vytautas\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

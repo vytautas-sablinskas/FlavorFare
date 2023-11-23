@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FeoKRdko2D6IWzHx2JczPNtgevR+3ntwcs/XOWrAW64lAt6KWAUeWN2jSx+WFa476dPGiupS8kF985XG2upURA==",
+  "dgSpecHash": "Wnms66rwaUANqFVAknolI7msHMx6k+K3FEulnHl+tCY7/KZbSW62YLbKvOx1vqYL0GjVTFu/iES44DB1kOEe8g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Vytautas\\Desktop\\Darbai\\FlavorFare\\FlavorFare\\FlavorFare.Data\\FlavorFare.Data.csproj",
+  "projectFilePath": "C:\\Users\\Vytautas\\source\\repos\\github_flavorfare\\FlavorFare\\FlavorFare\\FlavorFare.Data\\FlavorFare.Data.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vytautas\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\Vytautas\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
