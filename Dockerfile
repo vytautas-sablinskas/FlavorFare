@@ -1,6 +1,6 @@
 # Use the official Microsoft .NET SDK image for building the application
 FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
-WORKDIR /src
+WORKDIR /FlavorFare
 
 # Copy csproj file and restore as distinct layers
 COPY ["FlavorFare/FlavorFare.API/FlavorFare.API.csproj", "FlavorFare/FlavorFare.API/"]
