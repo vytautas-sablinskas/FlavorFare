@@ -1,27 +1,28 @@
-# https://hub.docker.com/_/microsoft-dotnet
+# Use the official Microsoft .NET SDK image for building the application
 FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
-WORKDIR /FlavorFare
+WORKDIR /src
 
-# copy csproj and restore as distinct layers
-COPY FlavorFare/FlavorFare.API/*.csproj .
-RUN dotnet restore -r linux-musl-x64 /p:PublishReadyToRun=true
+# Copy csproj file and restore as distinct layers
+COPY ["FlavorFare/FlavorFare.API/FlavorFare.API.csproj", "FlavorFare/FlavorFare.API/"]
+RUN dotnet restore "FlavorFare/FlavorFare.API/FlavorFare.API.csproj" -r linux-musl-x64 /p:PublishReadyToRun=true
 
-# copy everything else and build app
-COPY FlavorFare/FlavorFare.API/. .
-RUN dotnet publish -c Release -o /app -r linux-musl-x64 --self-contained true --no-restore /p:PublishReadyToRun=true /p:PublishSingleFile=true
+# Copy the remaining source code
+COPY ["FlavorFare/FlavorFare.API/", "FlavorFare/FlavorFare.API/"]
+WORKDIR /src/FlavorFare/FlavorFare.API
 
-# final stage/image
-FROM mcr.microsoft.com/dotnet/runtime-deps:7.0-alpine-amd64
+# Publish the application
+RUN dotnet publish -c Release -o /app/publish -r linux-musl-x64 --self-contained true --no-restore /p:PublishReadyToRun=true /p:PublishSingleFile=true
+
+# Use the official Microsoft .NET runtime image for the final stage
+FROM mcr.microsoft.com/dotnet/runtime-deps:7.0-alpine-amd64 AS final
 WORKDIR /app
-COPY --from=build /app .
+COPY --from=build /app/publish .
+
+# Set the entry point for the container
 ENTRYPOINT ["./FlavorFare.API"]
 
-# See: https://github.com/dotnet/announcements/issues/20
-# Uncomment to enable globalization APIs (or delete)
-ENV \
-     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
-     LC_ALL=en_US.UTF-8 \
-     LANG=en_US.UTF-8
- RUN apk add --no-cache \
-     icu-data-full \
-     icu-libs
+# Uncomment the following lines to enable globalization APIs
+# ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+#     LC_ALL=en_US.UTF-8 \
+#     LANG=en_US.UTF-8
+# RUN apk add --no-cache icu-data-full icu-libs
