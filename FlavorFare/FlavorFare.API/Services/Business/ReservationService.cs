@@ -110,7 +110,7 @@ namespace FlavorFare.API.Services.Business
                 throw new InvalidBookingException("You already have a booking that overlaps with this time slot.");
             }
 
-            var currentDateTime = DateTime.Now;
+            var currentDateTime = DateTime.UtcNow;
             var activeReservationsCount = _reservationRepository.FindByCondition(r =>
                 r.UserId == userId &&
                 r.EndTime > currentDateTime).Count();
