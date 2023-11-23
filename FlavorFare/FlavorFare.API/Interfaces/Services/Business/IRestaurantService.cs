@@ -1,5 +1,4 @@
 ﻿using FlavorFare.API.Dtos.Restaurants;
-using FlavorFare.Data.Entities;
 
 namespace FlavorFare.API.Interfaces.Services.Business
 {
@@ -11,7 +10,7 @@ namespace FlavorFare.API.Interfaces.Services.Business
 
         RestaurantDto Add(AddRestaurantDto restaurant);
 
-        void Update(int restaurantId, UpdateRestaurantDto restaurant);
+        RestaurantDto Update(int restaurantId, UpdateRestaurantDto restaurant);
 
         void Delete(int restaurantId);
     }

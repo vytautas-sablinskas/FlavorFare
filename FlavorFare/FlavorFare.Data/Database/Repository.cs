@@ -6,10 +6,10 @@ namespace FlavorFare.Data
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private BiblioNestDbContext _context;
+        private FlavorFareDbContext _context;
         private DbSet<T> _table;
 
-        public Repository(BiblioNestDbContext _context)
+        public Repository(FlavorFareDbContext _context)
         {
             this._context = _context;
             _table = _context.Set<T>();

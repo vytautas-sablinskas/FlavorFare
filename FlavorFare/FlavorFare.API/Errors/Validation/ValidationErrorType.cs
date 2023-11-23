@@ -8,6 +8,7 @@ public class ValidationErrorType
     public static ValidationErrorType None = new ValidationErrorType("None", null);
     public static ValidationErrorType EntityNotFound = new ValidationErrorType("EntityNotFound", typeof(EntityNotFoundException));
     public static ValidationErrorType BadRequest = new ValidationErrorType("BadRequest", typeof(InvalidEntityRelationshipException));
+    public static ValidationErrorType AuthorizationFailure = new ValidationErrorType("AuthorizationFailure", typeof(ResourceUsageForbiddenException));
 
     private ValidationErrorType(string name, Type exceptionType)
     {

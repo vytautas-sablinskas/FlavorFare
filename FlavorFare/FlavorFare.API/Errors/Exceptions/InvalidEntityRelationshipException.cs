@@ -2,6 +2,8 @@
 {
     public class InvalidEntityRelationshipException : Exception
     {
-        public InvalidEntityRelationshipException(string message) : base(message) { }
+        public InvalidEntityRelationshipException(string message) : base(message)
+        {
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using FlavorFare.API.Dtos.Tables;
 using FlavorFare.API.Interfaces.Services.Business;
+using FlavorFare.API.Roles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlavorFare.API.Controllers
@@ -30,6 +32,7 @@ namespace FlavorFare.API.Controllers
         }
 
         [HttpPost("restaurant/{restaurantId}/table")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<TableDto>> AddTable(int restaurantId, AddTableDto addTableDto)
         {
             var tableDto = _tableService.AddTable(addTableDto, restaurantId);
@@ -37,13 +40,15 @@ namespace FlavorFare.API.Controllers
         }
 
         [HttpPut("restaurant/{restaurantId}/table/{tableId}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> UpdateTable(int restaurantId, int tableId, UpdateTableDto updateTableDto)
         {
-            _tableService.UpdateTable(updateTableDto, tableId, restaurantId);
-            return NoContent();
+            var table = _tableService.UpdateTable(updateTableDto, tableId, restaurantId);
+            return Ok(table);
         }
 
         [HttpDelete("restaurant/{restaurantId}/table/{tableId}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> RemoveTable(int restaurantId, int tableId)
         {
             _tableService.DeleteTable(restaurantId, tableId);

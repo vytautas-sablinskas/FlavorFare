@@ -4,8 +4,10 @@ namespace FlavorFare.API.Interfaces.Services.Business
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetUsersAsync();
-        Task<User> GetUserAsync(int userId);
-        Task AddUser(User user);
+        Task<IEnumerable<FlavorFareUser>> GetUsersAsync();
+
+        Task<FlavorFareUser> GetUserAsync(int userId);
+
+        Task AddUser(FlavorFareUser user);
     }
 }

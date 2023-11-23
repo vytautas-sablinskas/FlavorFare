@@ -1,29 +1,29 @@
-﻿using FlavorFare.Data.Interfaces;
+﻿using FlavorFare.API.Interfaces.Services.Business;
 using FlavorFare.Data.Entities;
-using FlavorFare.API.Interfaces.Services.Business;
+using FlavorFare.Data.Interfaces;
 
 namespace FlavorFare.API.Services.Business
 {
     public class UserService : IUserService
     {
-        private readonly IRepository<User> _repository;
+        private readonly IRepository<FlavorFareUser> _repository;
 
-        public UserService(IRepository<User> repository)
+        public UserService(IRepository<FlavorFareUser> repository)
         {
             _repository = repository;
         }
 
-        public async Task AddUser(User user)
+        public async Task AddUser(FlavorFareUser user)
         {
             _repository.Create(user);
         }
 
-        public async Task<User> GetUserAsync(int userId)
+        public async Task<FlavorFareUser> GetUserAsync(int userId)
         {
-            return _repository.FindByCondition(u => u.Id == userId).FirstOrDefault();
+            return _repository.FindByCondition(u => u.Id.ToString() == userId.ToString()).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<User>> GetUsersAsync()
+        public async Task<IEnumerable<FlavorFareUser>> GetUsersAsync()
         {
             return _repository.FindAll();
         }

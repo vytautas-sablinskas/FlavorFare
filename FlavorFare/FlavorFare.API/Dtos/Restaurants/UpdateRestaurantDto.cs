@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FlavorFare.API.Annotations;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlavorFare.API.Dtos.Restaurants
 {
@@ -10,6 +12,20 @@ namespace FlavorFare.API.Dtos.Restaurants
 
         [Required(ErrorMessage = "Address is required.")]
         [StringLength(255, ErrorMessage = "Address cannot exceed 255 characters.")]
-        string Address
+        string Address,
+
+        [DataType(DataType.Time, ErrorMessage = "Invalid start time format.")]
+        [Required(ErrorMessage = "Opening time is required.")]
+        TimeSpan OpeningTime,
+
+        [CustomValidation(typeof(ClosingTimeValidationAttribute), "IsValid")]
+        [DataType(DataType.Time, ErrorMessage = "Invalid start time format.")]
+        [Required(ErrorMessage = "Closing time is required.")]
+        TimeSpan ClosingTime,
+
+        [CustomValidation(typeof(BookingIntervalValidationAttribute), "IsValid")]
+        [DataType(DataType.Time, ErrorMessage = "Invalid start time format.")]
+        [Required(ErrorMessage = "Interval between bookings is required.")]
+        TimeSpan IntervalBetweenBookings
     );
 }

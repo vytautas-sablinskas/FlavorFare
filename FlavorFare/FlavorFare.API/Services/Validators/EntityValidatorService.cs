@@ -1,5 +1,4 @@
-﻿using FlavorFare.API.Errors;
-using FlavorFare.API.Interfaces.Services.Validators;
+﻿using FlavorFare.API.Interfaces.Services.Validators;
 using FlavorFare.Data.Entities;
 using FlavorFare.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +8,11 @@ namespace FlavorFare.API.Services.Validators
     public class EntityValidatorService : IEntityValidatorService
     {
         private readonly IRepository<Reservation> _reservationRepository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<FlavorFareUser> _userRepository;
         private readonly IRepository<Table> _tableRepository;
         private readonly IRepository<Restaurant> _restaurantRepository;
 
-        public EntityValidatorService(IRepository<Reservation> reservationRepository, IRepository<User> userRepository, IRepository<Table> tableRepository, IRepository<Restaurant> restaurantRepository)
+        public EntityValidatorService(IRepository<Reservation> reservationRepository, IRepository<FlavorFareUser> userRepository, IRepository<Table> tableRepository, IRepository<Restaurant> restaurantRepository)
         {
             _reservationRepository = reservationRepository;
             _userRepository = userRepository;
@@ -21,15 +20,15 @@ namespace FlavorFare.API.Services.Validators
             _restaurantRepository = restaurantRepository;
         }
 
-        public EntityValidationResult Validate(int? reservationId = null, int? userId = null, int? restaurantId = null, int? tableId = null)
+        public ValidationResult Validate(int? reservationId = null, int? userId = null, int? restaurantId = null, int? tableId = null)
         {
-            var validationResult = new EntityValidationResult();
+            var validationResult = new ValidationResult();
 
             var entities = new Dictionary<string, object>();
             var tableNotFoundChecks = new List<(string entityType, Func<object> fetchEntity, int? id)>
             {
                 ("Reservation", () => _reservationRepository.FindByCondition(r => r.Id == reservationId.Value).Include(r => r.User).Include(r => r.Table).FirstOrDefault(), reservationId),
-                ("User", () => _userRepository.FindByCondition(u => u.Id == userId.Value).FirstOrDefault(), userId),
+                ("User", () => _userRepository.FindByCondition(u => u.Id == userId.Value.ToString()).FirstOrDefault(), userId),
                 ("Restaurant", () => _restaurantRepository.FindByCondition(r => r.Id == restaurantId.Value).FirstOrDefault(), restaurantId),
                 ("Table", () => _tableRepository.FindByCondition(t => t.Id == tableId.Value).Include(t => t.Restaurant).FirstOrDefault(), tableId)
             };
@@ -58,7 +57,7 @@ namespace FlavorFare.API.Services.Validators
             {
                 ("Table", "Restaurant", (tableObj, restaurantObj) => ((Table)tableObj).Restaurant.Id == ((Restaurant)restaurantObj).Id),
                 ("Reservation", "Table", (reservationObj, tableObj) => ((Reservation)reservationObj).Table.Id == ((Table)tableObj).Id),
-                ("Reservation", "User", (reservationObj, userObj) => ((Reservation)reservationObj).User.Id == ((User)userObj).Id)
+                ("Reservation", "User", (reservationObj, userObj) => ((Reservation)reservationObj).User.Id == ((FlavorFareUser)userObj).Id)
             };
 
             foreach (var (firstEntityType, secondEntityType, entitiesMatch) in badRequestChecks)
@@ -96,7 +95,7 @@ namespace FlavorFare.API.Services.Validators
                     id = reservation.Id.ToString();
                     break;
 
-                case User user:
+                case FlavorFareUser user:
                     id = user.Id.ToString();
                     break;
 

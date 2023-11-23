@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using FlavorFare.API.Dtos.Restaurants;
 using FlavorFare.API.Interfaces.Services.Business;
+using FlavorFare.API.Roles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlavorFare.API.Controllers
@@ -34,6 +36,7 @@ namespace FlavorFare.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<RestaurantDto>> AddRestaurant(AddRestaurantDto addRestaurantDto)
         {
             var restaurant = _restaurantService.Add(addRestaurantDto);
@@ -42,14 +45,16 @@ namespace FlavorFare.API.Controllers
 
         [HttpPut]
         [Route("{restaurantId}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> UpdateRestaurant(int restaurantId, UpdateRestaurantDto updateRestaurantDto)
         {
-            _restaurantService.Update(restaurantId, updateRestaurantDto);
-            return NoContent();
+            var restaurant = _restaurantService.Update(restaurantId, updateRestaurantDto);
+            return Ok(restaurant);
         }
 
         [HttpDelete]
         [Route("{restaurantId}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> RemoveRestaurant(int restaurantId)
         {
             _restaurantService.Delete(restaurantId);

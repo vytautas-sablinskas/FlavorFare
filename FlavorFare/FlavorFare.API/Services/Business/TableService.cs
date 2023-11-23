@@ -85,7 +85,7 @@ namespace FlavorFare.API.Services.Business
             return tables.Select(_mapper.Map<TableDto>);
         }
 
-        public void UpdateTable(UpdateTableDto updateTableDto, int tableId, int restaurantId)
+        public TableDto UpdateTable(UpdateTableDto updateTableDto, int tableId, int restaurantId)
         {
             var validationResult = _entityValidator.Validate(tableId: tableId, restaurantId: restaurantId);
             if (!validationResult.IsValid)
@@ -93,11 +93,15 @@ namespace FlavorFare.API.Services.Business
                 throw validationResult.GetException();
             }
 
-            var restaurant = _restaurantRepository.FindByCondition(r => r.Id == restaurantId).FirstOrDefault();
-            var tableToUpdate = _mapper.Map<Table>(updateTableDto);
-            tableToUpdate.Restaurant = restaurant;
+            var table = _tableRepository.FindByCondition(t => t.Id == tableId)
+                                   .Include(r => r.Restaurant)
+                                   .FirstOrDefault();
 
-            _tableRepository.Update(tableToUpdate);
+            _mapper.Map(updateTableDto, table);
+
+            _tableRepository.Update(table);
+
+            return _mapper.Map<TableDto>(table);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FlavorFare.API.Interfaces.Errors;
+﻿using FlavorFare.API.Errors.Strategies;
+using FlavorFare.API.Interfaces.Errors;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 public class CustomExceptionFilter : ExceptionFilterAttribute
@@ -10,7 +11,9 @@ public class CustomExceptionFilter : ExceptionFilterAttribute
         _exceptionStrategies = new List<IExceptionStrategy>
         {
             new EntityNotFoundExceptionStrategy(),
-            new InvalidEntityRelationshipExceptionStrategy()
+            new InvalidEntityRelationshipExceptionStrategy(),
+            new ResourceUsageForbiddenExceptionStrategy(),
+            new InvalidBookingExceptionStrategy(),
         };
     }
 

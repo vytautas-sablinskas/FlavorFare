@@ -1,0 +1,32 @@
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #333333 #F5F5F5;
+}
+
+/* This styles the scrollbar track */
+::webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+/* This styles the draggable scrolling handle */
+::webkit-scrollbar-thumb {
+    background-color: #333333;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+/* On hover of the scrolling handle */
+::webkit-scrollbar-thumb:hover {
+    background-color: #555555;
+}
+
+/* This styles the buttons on the scrollbar (if they exist) */
+::webkit-scrollbar-button {
+    display: none;  /* This hides them */
+}
+

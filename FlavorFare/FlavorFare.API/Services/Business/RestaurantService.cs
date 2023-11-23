@@ -1,10 +1,10 @@
-﻿using FlavorFare.Data.Interfaces;
-using FlavorFare.Data.Entities;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using FlavorFare.API.Dtos.Restaurants;
 using FlavorFare.API.Interfaces.Services.Business;
 using FlavorFare.API.Interfaces.Services.Validators;
-using FlavorFare.API.Dtos.Restaurants;
+using FlavorFare.Data.Entities;
+using FlavorFare.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlavorFare.API.Services.Business
 {
@@ -52,7 +52,7 @@ namespace FlavorFare.API.Services.Business
 
             var restaurant = _repository.FindByCondition(r => r.Id == restaurantId).FirstOrDefault();
 
-            return _mapper.Map<RestaurantDto>(restaurant); 
+            return _mapper.Map<RestaurantDto>(restaurant);
         }
 
         public async Task<IEnumerable<RestaurantDto>> GetRestaurantsAsync()
@@ -62,7 +62,7 @@ namespace FlavorFare.API.Services.Business
             return restaurants.Select(_mapper.Map<RestaurantDto>);
         }
 
-        public void Update(int restaurantId, UpdateRestaurantDto updateReservationDto)
+        public RestaurantDto Update(int restaurantId, UpdateRestaurantDto updateReservationDto)
         {
             var validationResult = _entityValidatorService.Validate(restaurantId: restaurantId);
             if (!validationResult.IsValid)
@@ -70,8 +70,12 @@ namespace FlavorFare.API.Services.Business
                 throw validationResult.GetException();
             }
 
+            var restaurant = _repository.FindByCondition(r => r.Id == restaurantId).FirstOrDefault();
+            _mapper.Map(updateReservationDto, restaurant);
 
-            _repository.Update(_mapper.Map<Restaurant>(updateReservationDto));
+            _repository.Update(restaurant);
+
+            return _mapper.Map<RestaurantDto>(restaurant);
         }
     }
 }
