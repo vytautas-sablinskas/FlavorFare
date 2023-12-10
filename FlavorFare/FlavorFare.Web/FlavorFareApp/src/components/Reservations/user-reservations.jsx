@@ -127,7 +127,6 @@
             }
 
             const response = await updateUserReservation(currentReservation);
-            console.log(response);
             if (response.status === 200) {
                 const updatedReservations = reservations.map(reservation => {
                     if (reservation.id === currentReservation.id) {
@@ -175,13 +174,6 @@
 
             handleCloseRemove();
         };
-
-        useEffect(() => {
-            console.log("Filter Status:", filterStatus);
-            console.log("Sort Order:", sortOrder);
-            console.log("Sorted Reservations:", sortedReservations);
-         }, [filterStatus, sortOrder, sortedReservations]);
-         
 
         return (
             <div style={{ overflowX: 'auto' }}>

@@ -26,9 +26,7 @@ function Header() {
   const navigation = useNavigate();
   const { isAuthenticated, role, refreshToken, changeUserInformationToLoggedOut } = useUser();
 
-  console.log(role);
   const handleNavigation = (url) => {
-    console.log(`going to ${url}`);
     navigation(url);
   };
 

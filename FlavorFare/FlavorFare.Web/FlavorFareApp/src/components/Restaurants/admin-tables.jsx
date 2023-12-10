@@ -38,11 +38,9 @@ const AddTableDialog = ({ open, onClose, onAdd, restaurantId }) => {
             }
 
             const response = await addTable(restaurantId, size);
-            console.log(response);
             if (response.status === 201) {
                 openSnackbar("Table was created", "success");
                 const data = await response.json();
-                console.log(data);
                 onAdd({ data });
             } else {
                 openSnackbar("Restaurant was not created. Try again later!", "error");
@@ -110,9 +108,7 @@ const UpdateTableDialog = ({ open, onClose, onUpdate, table }) => {
                 changeUserInformationToLoggedIn(result.data.accessToken, result.data.refreshToken);
             }
 
-            console.log(table.restaurantId, table.id, size);
             const response = await updateTable(table.restaurantId, table.id, size);
-            console.log(response);
             if (response.status === 200) {
                 openSnackbar("Table was updated", "success");
                 onUpdate({ id: table.id, size });
@@ -177,10 +173,7 @@ function AdminTables() {
     const openSnackbar = useContext(SnackbarContext);
 
     const handleAddTable = (table) => {
-        console.log("Adding table", table);
-        console.log(tables);
         setTables(prevTables => [...prevTables, table.data]);
-        console.log(tables);
     }
 
     const handleUpdateTable = (updatedTable) => {

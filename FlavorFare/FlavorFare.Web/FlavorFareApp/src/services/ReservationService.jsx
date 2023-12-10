@@ -54,7 +54,6 @@ export const getUserReservations = async () => {
 export const updateUserReservation = async (restaurant) => {
     const token = localStorage.getItem('accessToken');
 
-    console.log(restaurant);
     const response = await fetch(endpoints.UPDATE_RESERVATION.replace(':restaurantId', restaurant.restaurantId)
                                                              .replace(':tableId', restaurant.tableId)
                                                              .replace(':reservationId', restaurant.id), {

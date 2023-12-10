@@ -212,7 +212,6 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
           closingTime: closingTime + ":00",
           intervalBetweenBookings: intervalBetweenBookings,
         };
-        console.log(restaurantToUpdate);
 
         const response = await updateRestaurant(restaurant.id, restaurantToUpdate);
           
@@ -237,7 +236,6 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
   
     return (
       <Dialog open={open} onClose={onClose}>
-          {console.log('Dialog rendered', open)}
           <DialogTitle>Update Restaurant</DialogTitle>
           <DialogContent>
             <TextField label="Name" fullWidth margin="normal" value={name} onChange={e => setName(e.target.value)} />
@@ -295,7 +293,6 @@ function AdminRestaurants() {
     const navigation = useNavigate();
 
     useEffect(() => {
-      console.log('openUpdateDialog state changed', openUpdateDialog);
     }, [openUpdateDialog]);
 
     const handleSearchChange = (event) => {
@@ -341,7 +338,6 @@ function AdminRestaurants() {
     useEffect(() => {
         async function fetchData() {
           const actualRestaurants = await getRestaurants();
-          console.log(actualRestaurants);
           setRestaurants(actualRestaurants);
         }
 

@@ -3,7 +3,6 @@ import endpoints from './API';
 export const getRestaurants = async () => {
     const response = await fetch(endpoints.ALL_RESTAURANTS);
     const data = await response.json();
-    console.log(data);
     return data;
 };
 
@@ -35,7 +34,6 @@ export const addRestaurant = async (restaurant) => {
 export const updateRestaurant = async (restaurantId, updatedData) => {
     const token = localStorage.getItem('accessToken');
     const url = endpoints.UPDATE_RESTAURANT.replace(':restaurantId', restaurantId)
-    console.log(url);
     const response = await fetch(url, {
         method: 'PUT',
         headers: {

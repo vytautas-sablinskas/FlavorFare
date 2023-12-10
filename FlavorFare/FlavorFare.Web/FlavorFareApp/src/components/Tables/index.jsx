@@ -80,7 +80,6 @@ function Tables(props) {
 
     const tryFetchingRestaurantReservations = async () => {
         const data = await getReservations(state.reservationDate, restaurantId);
-        console.log(data);
         setState(prevState => ({ ...prevState, reservations: data }));
     }
 
@@ -265,7 +264,6 @@ function Tables(props) {
     }
 
     useEffect(() => {
-        console.log(state.reservationDate);
         setLoading(true);
         
         const fetchData = async () => {
@@ -311,7 +309,6 @@ function Tables(props) {
 
     const availableTimes = state.availableTimes;
     const noAvailableTimes = availableTimes.length === 0;
-    console.log(state.availableSlots);
     
     return (
         <Container maxWidth="sm" style={{ marginTop: '40px' }}>
@@ -387,7 +384,7 @@ function Tables(props) {
                                                     <TableRow key={size}>
                                                         <TableCell component="th" scope="row">{size}</TableCell>
                                                         <TableCell align="left">
-                                                            {count > 0 ? `${count} tables` : 'None'}
+                                                            {count <= 0 ? 'None' : count === 1 ? `${count} table` : `${count} tables`}
                                                         </TableCell>
                                                         {isAuthenticated && (
                                                             count > 0 ? (
