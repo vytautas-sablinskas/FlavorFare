@@ -35,7 +35,22 @@
             }
 
             const data = await getUserReservations();
-            setReservations(data);
+            const modifiedData = data.map(item => {
+                if (typeof item.startTime === 'string' && typeof item.endTime === 'string') {
+                  const startTimeWithoutLastLetter = item.startTime.slice(0, -1);
+                  const endTimeWithoutLastLetter = item.endTime.slice(0, -1);
+                  
+                  return {
+                    ...item,
+                    startTime: startTimeWithoutLastLetter,
+                    endTime: endTimeWithoutLastLetter,
+                  };
+                }
+                return item;
+              });              
+              
+            console.log(modifiedData);
+            setReservations(modifiedData);
         }
 
         useEffect(() => {
