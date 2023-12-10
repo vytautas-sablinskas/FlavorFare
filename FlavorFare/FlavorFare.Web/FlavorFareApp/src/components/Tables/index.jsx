@@ -148,25 +148,32 @@ function Tables(props) {
 
     const checkAvailabilityForTime = (startTime, endTime) => {
         const { tables, reservations } = state;
-        console.log("startTime:", startTime);
-        console.log("endTime:", endTime);
-        console.log(reservations);
+        const formatToUTC = time => time.endsWith('Z') ? time : `${time}Z`;
+
+        const utcStartTime = formatToUTC(startTime);
+        const utcEndTime = formatToUTC(endTime);
+    
         const uniqueSizes = [...new Set(tables.map(table => table.size))].sort((a, b) => a - b);
-      
+        
         const availableTables = {};
         uniqueSizes.forEach(size => {
-          availableTables[size] = tables.filter(table => 
-            table.size === size && 
-            !reservations.some(reservation => 
-              reservation.startTime <= endTime && reservation.endTime >= startTime &&
-              reservation.tableId === table.id
-            )
-          ).length;
+            availableTables[size] = tables.filter(table => {
+                const isSizeMatch = table.size === size;
+                const isAvailable = !reservations.some(reservation => {
+                    const reservationStartTime = formatToUTC(reservation.startTime);
+                    const reservationEndTime = formatToUTC(reservation.endTime);
+                    const isTimeOverlap = reservationStartTime < utcEndTime && reservationEndTime > utcStartTime;
+                    const isTableMatch = reservation.tableId === table.id;
+                    
+                    return isTimeOverlap && isTableMatch;
+                });
+                
+                return isSizeMatch && isAvailable;
+            }).length;
         });
       
-        console.log("availableTables:", availableTables);
         return availableTables;
-    }      
+    }       
     
 
     const formatToISODateTime = (date, decimalHours) => {
