@@ -105,7 +105,7 @@ namespace FlavorFare.API
                 options.AddPolicy("AllowReactApp",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:44436")
+                        builder.WithOrigins("https://flavor-fare.vercel.app/")
                                .AllowAnyHeader()
                                .AllowAnyMethod()
                                .AllowCredentials();
