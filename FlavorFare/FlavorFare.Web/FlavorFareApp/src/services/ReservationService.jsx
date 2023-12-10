@@ -51,21 +51,21 @@ export const getUserReservations = async () => {
     return response.json();
 }
 
-export const updateUserReservation = async (restaurant) => {
+export const updateUserReservation = async (reservation) => {
     const token = localStorage.getItem('accessToken');
 
-    const response = await fetch(endpoints.UPDATE_RESERVATION.replace(':restaurantId', restaurant.restaurantId)
-                                                             .replace(':tableId', restaurant.tableId)
-                                                             .replace(':reservationId', restaurant.id), {
+    const response = await fetch(endpoints.UPDATE_RESERVATION.replace(':restaurantId', reservation.restaurantId)
+                                                             .replace(':tableId', reservation.tableId)
+                                                             .replace(':reservationId', reservation.id), {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ 
-            extraInformation: restaurant.extraInformation || "", 
-            startTime: restaurant.startTime, 
-            endTime: restaurant.endTime 
+            extraInformation: reservation.extraInformation || "", 
+            startTime: reservation.startTime, 
+            endTime: reservation.endTime 
         })
     })
 

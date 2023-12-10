@@ -146,13 +146,7 @@ namespace FlavorFare.API.Services.Business
                 throw new ResourceUsageForbiddenException();
             }
 
-            var table = _tableRepository.FindByCondition(t => t.Id == tableId).FirstOrDefault();
-            var user = _userRepository.FindByCondition(u => u.Id == currentUser.FindFirstValue(JwtRegisteredClaimNames.Sub)).First();
-
-            _mapper.Map(updateReservationDto, reservation);
-            reservation.Table = table;
-            reservation.User = user;
-
+            reservation.ExtraInformation = updateReservationDto.ExtraInformation;
             _reservationRepository.Update(reservation);
 
             return _mapper.Map<ReservationDto>(reservation);
