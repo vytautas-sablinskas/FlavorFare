@@ -107,8 +107,7 @@ namespace FlavorFare.API
                     {
                         builder.AllowAnyOrigin()
                                .AllowAnyHeader()
-                               .AllowAnyMethod()
-                               .AllowCredentials();
+                               .AllowAnyMethod();
                     });
             });
 
