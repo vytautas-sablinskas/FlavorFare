@@ -105,7 +105,7 @@ namespace FlavorFare.API
                 options.AddPolicy("AllowReactApp",
                     builder =>
                     {
-                        builder.WithOrigins("*")
+                        builder.AllowAnyOrigin()
                                .AllowAnyHeader()
                                .AllowAnyMethod()
                                .AllowCredentials();
