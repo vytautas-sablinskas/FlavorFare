@@ -1,0 +1,27 @@
+.fade-in {
+    opacity: 0;
+    animation: fadeInAnimation ease 1s;
+    animation-fill-mode: forwards;
+  }
+  
+  @keyframes fadeInAnimation {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  
+  .card-transition {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+  }
+  
+  .card-transition-enter {
+    transform: scale(1);
+    opacity: 1;
+  }
+  

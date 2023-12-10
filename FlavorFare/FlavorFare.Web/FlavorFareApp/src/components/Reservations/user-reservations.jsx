@@ -49,7 +49,6 @@
                 return item;
               });              
               
-            console.log(modifiedData);
             setReservations(modifiedData);
         }
 

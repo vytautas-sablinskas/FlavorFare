@@ -4,6 +4,8 @@ import { getRestaurants } from '../../services/RestaurantService';
 import { InputBase, Paper, Card, CardContent, Rating, CardMedia, Typography, Button, Box, Grid, Container, useTheme, useMediaQuery } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
+import { grey } from '@mui/material/colors';
+import '../../styles/restaurants.css';
 
 function Restaurants() {
   const [restaurants, setRestaurants] = useState([]);
@@ -39,7 +41,9 @@ function Restaurants() {
     }));
     
     setRestaurants(enhancedData);
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   };
 
   const renderRestaurantsCards = (restaurants) => {
@@ -52,99 +56,99 @@ function Restaurants() {
 
     return (
         <Container maxWidth="lg">
-            <Grid container spacing={4} justifyContent={justifyContentValue} alignItems={isSmallScreen ? "center" : "flex-start"}>
-                {restaurants.map(restaurant => (
-                    <Grid item xs={12} sm={4} key={restaurant.id}>
-                        <Card sx={{ maxWidth: 345, margin: '0 auto' }}>
-                            <CardMedia
-                                component="img"
-                                height="140"
-                                image={restaurant.randomImage}
-                                alt="Restaurant Image"
-                            />
-                            <CardContent>
-                                <Box display="flex" alignItems="center" mb={1}>
-                                    <Typography variant="subtitle2" color="primary" component="div">
-                                        {restaurant.name}
-                                    </Typography>
-                                </Box>
-                                <Box mb={1}>
-                                    <Typography variant="h6" component="div">
-                                        {restaurant.address}
-                                    </Typography>
-                                </Box>
-                                <Box mb={1}>
-                                    <Typography variant="body2">
-                                        Open from {formatTime(restaurant.openingTime)} to {formatTime(restaurant.closingTime)}
-                                    </Typography>
-                                </Box>
-                                <Box display="flex" alignItems="center" mb={1}>
-                                    <Typography variant="body2">
-                                        <Rating name="read-only" precision={0.1} value={restaurant.randomRating} readOnly />
-                                    </Typography>
-                                </Box>
-                                <Box>
-                                <Link to={`restaurant/${restaurant.id}`} style={{ textDecoration: 'none', display: 'block' }}>
-                                    <Button variant="contained" color="primary" style={{ width: '100%', height: '100%' }}>
-                                        Check out
-                                    </Button>
-                                </Link>
-                                </Box>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
+          <Grid container spacing={4} justifyContent={justifyContentValue} alignItems={isSmallScreen ? "center" : "flex-start"}>
+              {restaurants.map(restaurant => (
+                  <Grid item xs={12} sm={4} key={restaurant.id} style={{ flex: 1 }}>
+                      <Card sx={{ margin: '0 auto', height: '100%', width: '100%', border: `1px solid ${grey[200]}`  }}>
+                          <CardMedia
+                              component="img"
+                              height="140"
+                              image={restaurant.randomImage}
+                              alt="Restaurant Image"
+                          />
+                          <CardContent style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              <Box display="flex" alignItems="center" mb={1}>
+                                  <Typography variant="subtitle2" color="primary" component="div" noWrap>
+                                      {restaurant.name}
+                                  </Typography>
+                              </Box>
+                              <Box mb={1}>
+                                  <Typography variant="h6" component="div" noWrap>
+                                      {restaurant.address}
+                                  </Typography>
+                              </Box>
+                              <Box mb={1}>
+                                  <Typography variant="body2" noWrap>
+                                      Open from {formatTime(restaurant.openingTime)} to {formatTime(restaurant.closingTime)}
+                                  </Typography>
+                              </Box>
+                              <Box display="flex" alignItems="center" mb={1}>
+                                  <Typography variant="body2">
+                                      <Rating name="read-only" precision={0.1} value={restaurant.randomRating} readOnly />
+                                  </Typography>
+                              </Box>
+                              <Box>
+                                  <Link to={`restaurant/${restaurant.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+                                      <Button variant="contained" color="primary" style={{ width: '100%', height: '100%' }}>
+                                          Check out
+                                      </Button>
+                                  </Link>
+                              </Box>
+                          </CardContent>
+                      </Card>
+                  </Grid>
+              ))}
+          </Grid>
+      </Container>
+          )};
+        
+
+        const onSearchChange = (event) => {
+          setSearch(event.target.value);
+        };
+
+        const filteredRestaurants = () => {
+              if (!search) return restaurants;
+              return restaurants.filter(restaurant => 
+                  restaurant.name.toLowerCase().includes(search.toLowerCase()) ||
+                  restaurant.address.toLowerCase().includes(search.toLowerCase())
+              );
+          };
+
+        return (
+          <div>
+            <Typography 
+              variant="h2" 
+              id="tableLabel" 
+              gutterBottom 
+              textAlign="center"
+              sx={{ marginTop: '4rem' }}
+            >
+              Discover & Book the Best Restaurants in Town
+            </Typography>
+            <Grid container justifyContent="center" alignItems="center" spacing={2}>
+                <Grid item xs={12} md={4} style={{ display: 'flex' }}>
+                    <Paper 
+                        sx={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            padding: '8px 8px', 
+                            margin: '16px',
+                            flex: 1,
+                        }}
+                    >
+                        <SearchIcon />
+                        <InputBase
+                            placeholder="Search by name or address..."
+                            onChange={onSearchChange}
+                            fullWidth
+                        />
+                    </Paper>
+                </Grid>
             </Grid>
-        </Container>
-    )};
-  
-
-  const onSearchChange = (event) => {
-    setSearch(event.target.value);
-  };
-
-  const filteredRestaurants = () => {
-        if (!search) return restaurants;
-        return restaurants.filter(restaurant => 
-            restaurant.name.toLowerCase().includes(search.toLowerCase()) ||
-            restaurant.address.toLowerCase().includes(search.toLowerCase())
-        );
-    };
-
-  return (
-    <div>
-      <Typography 
-        variant="h2" 
-        id="tableLabel" 
-        gutterBottom 
-        textAlign="center"
-        sx={{ marginTop: '4rem' }}
-      >
-        Discover & Book the Best Restaurants in Town
-      </Typography>
-      <Grid container justifyContent="center" alignItems="center" spacing={2}>
-        <Grid item xs={12} md={4}>
-          <Paper 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              padding: '8px 8px', 
-              margin: '16px',
-              maxWidth: '95%'
-            }}
-          >
-            <SearchIcon />
-            <InputBase
-              placeholder="Search by name or address..."
-              onChange={onSearchChange}
-              fullWidth
-            />
-          </Paper>
-        </Grid>
-      </Grid>
-      {loading 
-        ? <Typography variant="h2" textAlign="center"><em>Loading...</em></Typography> 
-        : renderRestaurantsCards(filteredRestaurants(), isSmallScreen)}
+            {loading
+              ? <Typography variant="h2" textAlign="center" className="fade-in"><em>Loading...</em></Typography>
+              : renderRestaurantsCards(filteredRestaurants(), isSmallScreen)}
     </div>
   );
 }

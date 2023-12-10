@@ -128,7 +128,7 @@ function Header() {
                 <MenuItem
                   key={page.name}
                   onClick={() => handleNavigation(page.route)}
-                  style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
+                  style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none', fontFamily: 'Alegreya, sans-serif', }}
                 >
                   <Link to={page.route} style={{ textDecoration: 'none', color: 'black' }}>
                     {page.name}
@@ -161,7 +161,7 @@ function Header() {
                 onClick={() => handleNavigation(page.route)}
                 style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}
               >
-                <MenuItem onClick={handleCloseNavMenu} style={{ pointerEvents: 'none' }}>
+                <MenuItem onClick={handleCloseNavMenu} style={{ pointerEvents: 'none', fontFamily: 'Alegreya', }}>
                   <Link to={page.route} style={{ textDecoration: 'none', color: 'white' }}>
                     {page.name}
                   </Link>

@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { getRestaurants } from '../services/RestaurantService';
+import '../../styles/restaurants.css';
 
 export class FetchRestaurants extends Component {
     static displayName = FetchRestaurants.name;
