@@ -1,14 +1,12 @@
     import React, { useState, useEffect, useContext } from 'react';
     import { Button, Paper, Typography, Table, Select, MenuItem, FormControl, InputLabel, TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-    import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+    import { Edit as EditIcon, Block as BlockIcon, Delete as DeleteIcon } from '@mui/icons-material';
     import { useNavigate } from 'react-router-dom';
-    import { getUserReservations } from '../../services/ReservationService';
+    import { getUserReservations, updateUserReservation, removeUserReservation } from '../../services/ReservationService';
     import { checkTokenValidity } from '../../utils/jwtUtils';
     import { refreshAccessToken } from '../../services/AuthenticationService';
     import { useUser } from '../Contexts/UserContext';
     import SnackbarContext from '../Contexts/SnackbarContext';
-    import { updateUserReservation, removeUserReservation } from '../../services/ReservationService';
-    import { Block as BlockIcon } from '@mui/icons-material';
 
     function UserReservations() {
         const [sortOrder, setSortOrder] = useState('asc');
@@ -128,7 +126,8 @@
                 changeUserInformationToLoggedIn(result.data.accessToken, result.data.refreshToken);
             }
 
-            const response = await updateUserReservation(currentReservation.restaurantId, currentReservation.tableId, currentReservation.id, currentReservation.extraInformation);
+            const response = await updateUserReservation(currentReservation);
+            console.log(response);
             if (response.status === 200) {
                 const updatedReservations = reservations.map(reservation => {
                     if (reservation.id === currentReservation.id) {

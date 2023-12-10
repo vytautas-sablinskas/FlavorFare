@@ -52,7 +52,7 @@ namespace FlavorFare.API.Services.Business
             var reservations = await _reservationRepository.FindAll()
                                                            .Include(r => r.Table)
                                                            .Include(r => r.User)
-                                                           .Where(r => r.StartTime.Date == reservationDateDto.DateTime.Date &&
+                                                           .Where(r => DateOnly.FromDateTime(r.StartTime) == reservationDateDto.Date &&
                                                                                            tableIdsByRestaurantId.Contains(r.Table.Id))
                                                            .ToListAsync();
 

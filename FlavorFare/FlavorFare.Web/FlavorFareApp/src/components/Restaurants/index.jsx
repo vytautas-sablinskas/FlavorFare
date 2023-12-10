@@ -43,11 +43,9 @@ function Restaurants() {
   };
 
   const renderRestaurantsCards = (restaurants) => {
-    const formatTime = (isoTime) => {
-        const date = new Date(isoTime);
-        const hh = String(date.getHours()).padStart(2, '0');
-        const mm = String(date.getMinutes()).padStart(2, '0');
-        return `${hh}:${mm}`;
+    const formatTime = (timeString) => {
+      const [hh, mm, ss] = timeString.split(":");
+      return `${hh}:${mm}`;
     };
 
     const justifyContentValue = (restaurants.length <= 2) ? 'center' : 'flex-start';

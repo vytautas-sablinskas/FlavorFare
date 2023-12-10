@@ -33,7 +33,7 @@ export const addReservation = async (restaurantId, tableId, startTime, endTime, 
 
 export const getReservations = async (date, restaurantId) => {
     const url = new URL(endpoints.ALL_RESERVATIONS.replace(':restaurantId', restaurantId));
-    url.searchParams.append('datetime', date);
+    url.searchParams.append('date', date);
 
     const response = await fetch(url);
     return response.json();
@@ -51,17 +51,23 @@ export const getUserReservations = async () => {
     return response.json();
 }
 
-export const updateUserReservation = async (restaurantId, tableId, reservationId, extraInformation) => {
+export const updateUserReservation = async (restaurant) => {
     const token = localStorage.getItem('accessToken');
-    const response = await fetch(endpoints.UPDATE_RESERVATION.replace(':restaurantId', restaurantId)
-                                                             .replace(':tableId', tableId)
-                                                             .replace(':reservationId', reservationId), {
+
+    console.log(restaurant);
+    const response = await fetch(endpoints.UPDATE_RESERVATION.replace(':restaurantId', restaurant.restaurantId)
+                                                             .replace(':tableId', restaurant.tableId)
+                                                             .replace(':reservationId', restaurant.id), {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ extraInformation: extraInformation || "" })
+        body: JSON.stringify({ 
+            extraInformation: restaurant.extraInformation || "", 
+            startTime: restaurant.startTime, 
+            endTime: restaurant.endTime 
+        })
     })
 
     return response;

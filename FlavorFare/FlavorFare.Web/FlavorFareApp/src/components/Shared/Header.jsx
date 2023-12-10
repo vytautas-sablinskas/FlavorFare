@@ -16,10 +16,10 @@ import MenuItem from '@mui/material/MenuItem';
 import LoginModal from '../Authentication/LoginPage.jsx'
 import RegistrationModal from '../Authentication/RegisterPage.jsx'
 import { Link } from 'react-router-dom';
-import { useUser } from '../Contexts/UserContext';
+import { useUser } from '../Contexts/UserContext.jsx';
 import { isDragActive } from 'framer-motion';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { logout } from '../../services/AuthenticationService';
+import { logout } from '../../services/AuthenticationService.jsx';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
@@ -39,15 +39,15 @@ function Header() {
 
   if (isAuthenticated) {
     settings.push({ name: 'Your reservations', route: 'user/reservations' });
-
-    if (role.toLowerCase().includes('admin')) {
-        settings.push(
-            { name: 'Manage restaurants', route: 'admin/restaurants' },
-            { name: 'Manage tables', route: 'manage-tables' },
-            { name: 'Manage reservations', route: 'manage-reservations' }
-        );
+  
+    if (typeof role === 'string' && role.toLowerCase().includes('admin')) {
+      settings.push(
+        { name: 'Manage restaurants', route: 'admin/restaurants' },
+        { name: 'Manage tables', route: 'manage-tables' },
+        { name: 'Manage reservations', route: 'manage-reservations' }
+      );
     }
-
+  
     settings.push({ name: 'Logout', route: '/', method: 'handleLogout' });
   }
 

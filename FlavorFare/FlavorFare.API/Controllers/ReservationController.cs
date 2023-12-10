@@ -18,7 +18,7 @@ namespace FlavorFare.API.Controllers
         }
 
         [HttpGet("restaurant/{restaurantId}/reservation")]
-        public async Task<IActionResult> GetReservationsAsync(int restaurantId, ReservationDateDto reservationDateDto)
+        public async Task<IActionResult> GetReservationsAsync(int restaurantId, [FromQuery] ReservationDateDto reservationDateDto)
         {
             var reservations = await _reservationService.GetReservationsAsync(restaurantId, reservationDateDto);
             return Ok(reservations);

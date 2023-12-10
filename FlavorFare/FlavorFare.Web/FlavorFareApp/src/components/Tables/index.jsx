@@ -55,18 +55,19 @@ function Tables(props) {
 
     const tryFetchingRestaurant = async (restaurantId) => {
         const data = await getRestaurantById(restaurantId);
-        
-        const isoTimeToDecimal = (isoTime) => {
-            const timeParts = isoTime.split('T')[1].split(':');
+
+        const hhmmssToDecimal = (hhmmss) => {
+            const timeParts = hhmmss.split(':');
             const hours = parseInt(timeParts[0], 10);
             const minutes = parseInt(timeParts[1], 10);
-            const decimalTime = hours + (minutes / 60);
+            const seconds = parseInt(timeParts[2], 10);
+            const decimalTime = hours + (minutes / 60) + (seconds / 3600);
             return parseFloat(decimalTime.toFixed(1));
-        };        
+        };               
         
-        const startTime = isoTimeToDecimal(data.openingTime);
-        const endTime = isoTimeToDecimal(data.closingTime);
-        const interval = isoTimeToDecimal(data.intervalBetweenBookings);
+        const startTime = hhmmssToDecimal(data.openingTime);
+        const endTime = hhmmssToDecimal(data.closingTime);
+        const interval = hhmmssToDecimal(data.intervalBetweenBookings);
 
         setState(prevState => ( {
             ...prevState,
@@ -79,6 +80,7 @@ function Tables(props) {
 
     const tryFetchingRestaurantReservations = async () => {
         const data = await getReservations(state.reservationDate, restaurantId);
+        console.log(data);
         setState(prevState => ({ ...prevState, reservations: data }));
     }
 
@@ -122,7 +124,7 @@ function Tables(props) {
             const startDateTimeISO = formatToISODateTime(state.reservationDate, timeMinutes / 60);
             const endDateTimeISO = formatToISODateTime(state.reservationDate, (timeMinutes + intervalMinutes) / 60);
             const timeSlot = `${startDateTimeISO} - ${endDateTimeISO}`;
-            availableSlots[timeSlot] = checkAvailabilityForTime(startDateTimeISO);
+            availableSlots[timeSlot] = checkAvailabilityForTime(startDateTimeISO, endDateTimeISO);
         }
 
         const convertISOToSimpleTimeRange = (isoTimeRange) => {
@@ -146,25 +148,26 @@ function Tables(props) {
 
     const checkAvailabilityForTime = (startTime, endTime) => {
         const { tables, reservations } = state;
-        
+        console.log("startTime:", startTime);
+        console.log("endTime:", endTime);
+        console.log(reservations);
         const uniqueSizes = [...new Set(tables.map(table => table.size))].sort((a, b) => a - b);
-        
+      
         const availableTables = {};
-        
         uniqueSizes.forEach(size => {
-            availableTables[size] = tables.filter(table => 
-                table.size === size && 
-                !reservations.some(reservation => 
-                    !(reservation.endTime <= startTime || reservation.startTime >= endTime) &&
-                    reservation.tableId === table.id
-                )
-            ).length;
+          availableTables[size] = tables.filter(table => 
+            table.size === size && 
+            !reservations.some(reservation => 
+              reservation.startTime <= endTime && reservation.endTime >= startTime &&
+              reservation.tableId === table.id
+            )
+          ).length;
         });
-        
+      
+        console.log("availableTables:", availableTables);
         return availableTables;
-    }
+    }      
     
-
 
     const formatToISODateTime = (date, decimalHours) => {
         const hours = Math.floor(decimalHours);
@@ -248,13 +251,14 @@ function Tables(props) {
             }
 
             const response = await addReservation(restaurantId, tableToBook.id, startTimeISO, endTimeISO, state.extraInformation);
-            navigation('/reservations');
+            navigation('/user/reservations');
 
             openSnackbar(response.message, response.success);
         }
     }
 
     useEffect(() => {
+        console.log(state.reservationDate);
         setLoading(true);
         
         const fetchData = async () => {
@@ -300,6 +304,7 @@ function Tables(props) {
 
     const availableTimes = state.availableTimes;
     const noAvailableTimes = availableTimes.length === 0;
+    console.log(state.availableSlots);
     
     return (
         <Container maxWidth="sm" style={{ marginTop: '40px' }}>
@@ -370,22 +375,28 @@ function Tables(props) {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {state.availableSlots[convertSimpleToISOTimeRange(state.selectedTime)] && Object.entries(state.availableSlots[convertSimpleToISOTimeRange(state.selectedTime)]).map(([size, count]) => (
-                                                <TableRow key={size}>
-                                                    <TableCell component="th" scope="row">{size}</TableCell>
-                                                    <TableCell align="left">{count > 0 ? `${count} tables` : 'None'}</TableCell>
-                                                    {isAuthenticated && (
-                                                        count > 0 ? 
-                                                        <TableCell align="right">
-                                                            {isTimePassed(state.reservationDate, state.selectedTime) ? 
-                                                                <Typography color="textSecondary">Unavailable</Typography> :
-                                                                <Button variant="contained" color="primary" onClick={() => handleBooking(size)}>Book it</Button>
-                                                            }
-                                                        </TableCell> :
-                                                        <TableCell align="right"></TableCell>  // Render an empty cell
-                                                    )}
-                                                </TableRow>
-                                            ))}
+                                            {state.availableSlots[convertSimpleToISOTimeRange(state.selectedTime)] &&
+                                                Object.entries(state.availableSlots[convertSimpleToISOTimeRange(state.selectedTime)]).map(([size, count]) => (
+                                                    <TableRow key={size}>
+                                                        <TableCell component="th" scope="row">{size}</TableCell>
+                                                        <TableCell align="left">
+                                                            {count > 0 ? `${count} tables` : 'None'}
+                                                        </TableCell>
+                                                        {isAuthenticated && (
+                                                            count > 0 ? (
+                                                                <TableCell align="right">
+                                                                    {isTimePassed(state.reservationDate, state.selectedTime) ? (
+                                                                        <Typography color="textSecondary">Unavailable</Typography>
+                                                                    ) : (
+                                                                        <Button variant="contained" color="primary" onClick={() => handleBooking(size)}>Book it</Button>
+                                                                    )}
+                                                                </TableCell>
+                                                            ) : (
+                                                                <TableCell align="right"></TableCell>
+                                                            )
+                                                        )}
+                                                    </TableRow>
+                                                ))}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>

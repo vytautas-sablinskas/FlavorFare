@@ -5,6 +5,6 @@ namespace FlavorFare.API.Dtos.Reservations
 
     public record ReservationDateDto(
         [Required]
-        DateTime DateTime
+        DateOnly Date
     );
 }
