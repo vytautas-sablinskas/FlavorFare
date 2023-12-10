@@ -34,13 +34,21 @@ export const addRestaurant = async (restaurant) => {
 
 export const updateRestaurant = async (restaurantId, updatedData) => {
     const token = localStorage.getItem('accessToken');
-    const response = await fetch(endpoints.UPDATE_RESTAURANT.replace(':restaurantId', restaurantId), {
+    const url = endpoints.UPDATE_RESTAURANT.replace(':restaurantId', restaurantId)
+    console.log(url);
+    const response = await fetch(url, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(updatedData)
+        body: JSON.stringify({
+            name: updatedData.name,
+            address: updatedData.address,
+            openingTime: updatedData.openingTime,
+            closingTime: updatedData.closingTime,
+            intervalBetweenBookings: updatedData.intervalBetweenBookings
+        })
     });
 
     return response;

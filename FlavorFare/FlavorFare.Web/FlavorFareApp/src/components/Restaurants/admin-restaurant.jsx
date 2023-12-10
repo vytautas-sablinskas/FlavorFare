@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
-  Button, Paper, Typography, Table, Select, MenuItem, FormControl, InputLabel,
+  Button, Paper, Typography, Table,
   TableBody, TableCell, TableContainer, TableHead, TableRow, Dialog,
-  DialogTitle, DialogContent, DialogActions, TextField, Grid, Box
+  DialogTitle, DialogContent, DialogActions, TextField, Grid, Box, Hidden
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { getRestaurants, addRestaurant, updateRestaurant, removeRestaurant } from '../../services/RestaurantService';
+import { checkTokenValidity } from '../../utils/jwtUtils';
+import { refreshAccessToken } from '../../services/AuthenticationService';
+import { useUser } from '../Contexts/UserContext';
+import SnackbarContext from '../Contexts/SnackbarContext';
+import { useNavigate } from 'react-router-dom';
 
 const timeToHHMM = (isoTime) => {
     if (!isoTime) return "00:00";
-    return isoTime.substr(11, 5);
+    return isoTime.substr(0, 5);
 };
 
 const hhmmToISO = (time) => {
@@ -31,10 +34,11 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
     const [closingTime, setClosingTime] = useState("");
     const [intervalBetweenBookings, setIntervalBetweenBookings] = useState("");
     const [errors, setErrors] = useState({});
+    const { changeUserInformationToLoggedIn, changeUserInformationToLoggedOut } = useUser();
+    const openSnackbar = useContext(SnackbarContext);
 
     const validate = () => {
         const newErrors = {};
-
         if (closingTime <= openingTime) {
             newErrors.time = "Closing time must be greater than opening time";
         }
@@ -43,7 +47,7 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
         const interval = parseFloat(intervalBetweenBookings.split(":")[0]) + parseFloat(intervalBetweenBookings.split(":")[1]) / 60;
         
         if (interval > diff) {
-            newErrors.interval = `Interval should be less than or equal to ${diff} hours`;
+            newErrors.interval = `Interval should not be greater than difference between end and start time`;
         }
 
         setErrors(newErrors);
@@ -51,19 +55,38 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = () => {
-      if (validate()) {
-        onAdd({
-          id: Date.now(),
+    const handleSubmit = async () => {
+        if (validate()) {
+          const accessToken = localStorage.getItem('accessToken');
+          if (!checkTokenValidity(accessToken)) {
+            const result = await refreshAccessToken();
+            if (!result.success) {
+                openSnackbar('Login to page!', 'error');
+                changeUserInformationToLoggedOut();
+                navigation('/login');
+                return;
+            }
+
+            changeUserInformationToLoggedIn(result.data.accessToken, result.data.refreshToken);
+        }
+
+        const restaurantToAdd = {
           name,
           address,
-          openingTime: hhmmToISO(openingTime),
-          closingTime: hhmmToISO(closingTime)
-        });
-        setName("");
-        setAddress("");
-        setOpeningTime("");
-        setClosingTime("");
+          openingTime: openingTime + ":00",
+          closingTime: closingTime + ":00",
+          intervalBetweenBookings: intervalBetweenBookings + ":00",
+        };
+
+        const response = await addRestaurant(restaurantToAdd);
+
+        if (response.status === 201) {
+          openSnackbar("Restaurant was created", "success");
+          onAdd(restaurantToAdd);
+        } else {
+          openSnackbar("Restaurant was not created. Try again later!", "error");
+        }
+
         onClose();
       }
     };
@@ -75,7 +98,7 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
           <TextField label="Name" fullWidth margin="normal" value={name} onChange={e => setName(e.target.value)} />
           <TextField label="Address" fullWidth margin="normal" value={address} onChange={e => setAddress(e.target.value)} />
           <TextField 
-            error={!!errors.time}
+            error={errors.time}
             helperText={errors.time}
             label="Opening Time" 
             type="time" 
@@ -86,7 +109,7 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
             InputLabelProps={{ shrink: true }} 
           />
           <TextField 
-            error={!!errors.time}
+            error={errors.time}
             helperText={errors.time}
             label="Closing Time" 
             type="time" 
@@ -97,8 +120,8 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
             InputLabelProps={{ shrink: true }} 
           />
           <TextField 
-            error={!!errors.time}
-            helperText={errors.time}
+            error={errors.interval}
+            helperText={errors.interval}
             label="Interval Between Bookings" 
             type="time" 
             fullWidth 
@@ -129,11 +152,15 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
   };
   
   const UpdateRestaurantDialog = ({ open, onClose, onUpdate, restaurant }) => {
-    const [name, setName] = useState(restaurant?.name || "");
-    const [address, setAddress] = useState(restaurant?.address || "");
-    const [openingTime, setOpeningTime] = useState(timeToHHMM(restaurant?.openingTime) || "");
-    const [closingTime, setClosingTime] = useState(timeToHHMM(restaurant?.closingTime) || "");
+    const [name, setName] = useState("");
+    const [address, setAddress] = useState("");
+    const [openingTime, setOpeningTime] = useState("");
+    const [closingTime, setClosingTime] = useState("");
     const [intervalBetweenBookings, setIntervalBetweenBookings] = useState("");
+    const [errors, setErrors] = useState({});
+    const navigation = useNavigate();
+    const { changeUserInformationToLoggedIn, changeUserInformationToLoggedOut } = useUser();
+    const openSnackbar = useContext(SnackbarContext);
   
     useEffect(() => {
       if (restaurant) {
@@ -141,61 +168,119 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
         setAddress(restaurant.address);
         setOpeningTime(timeToHHMM(restaurant.openingTime));
         setClosingTime(timeToHHMM(restaurant.closingTime));
-        setIntervalBetweenBookings(timeToHHMM(restaurant.intervalBetweenBookings));
+        setIntervalBetweenBookings(restaurant.intervalBetweenBookings);
       }
     }, [restaurant]);
   
-    const handleSubmit = () => {
-      onUpdate({
-        ...restaurant,
-        name,
-        address,
-        openingTime: hhmmToISO(openingTime),
-        closingTime: hhmmToISO(closingTime),
-        intervalBetweenBookings: hhmmToISO(intervalBetweenBookings),
-      });
-      onClose();
+    const validate = () => {
+      const newErrors = {};
+      if (closingTime <= openingTime) {
+          newErrors.time = "Closing time must be greater than opening time";
+      }
+      
+      const diff = timeDifference(openingTime, closingTime);
+      const interval = parseFloat(intervalBetweenBookings.split(":")[0]) + parseFloat(intervalBetweenBookings.split(":")[1]) / 60;
+      
+      if (interval > diff) {
+          newErrors.interval = `Interval should not be greater than difference between end and start time`;
+      }
+
+      setErrors(newErrors);
+
+      return Object.keys(newErrors).length === 0;
+    };
+
+    const handleUpdate = async () => {
+      if (validate()) {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!checkTokenValidity(accessToken)) {
+          const result = await refreshAccessToken();
+          if (!result.success) {
+              openSnackbar('Login to page!', 'error');
+              changeUserInformationToLoggedOut();
+              navigation('/login');
+              return;
+          }
+
+          changeUserInformationToLoggedIn(result.data.accessToken, result.data.refreshToken);
+        };
+
+        const restaurantToUpdate = {
+          name,
+          address,
+          openingTime: openingTime + ":00",
+          closingTime: closingTime + ":00",
+          intervalBetweenBookings: intervalBetweenBookings,
+        };
+        console.log(restaurantToUpdate);
+
+        const response = await updateRestaurant(restaurant.id, restaurantToUpdate);
+          
+        if (response.status === 200) {
+          openSnackbar("Restaurant was updated", "success");
+  
+          onUpdate({
+            ...restaurant,
+            name,
+            address,
+            openingTime,
+            closingTime,
+            intervalBetweenBookings,
+          });
+        } else {
+          openSnackbar("Restaurant was not updated. Try again later!", "error");
+        }
+
+        onClose();
+      }
     };
   
     return (
       <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Update Restaurant</DialogTitle>
-        <DialogContent>
-          <TextField label="Name" fullWidth margin="normal" value={name} onChange={e => setName(e.target.value)} />
-          <TextField label="Address" fullWidth margin="normal" value={address} onChange={e => setAddress(e.target.value)} />
-          <TextField 
-            label="Opening Time" 
-            type="time" 
-            fullWidth 
-            margin="normal"
-            value={openingTime} 
-            onChange={e => setOpeningTime(e.target.value)} 
-            InputLabelProps={{ shrink: true }} 
-          />
-          <TextField 
-            label="Closing Time" 
-            type="time" 
-            fullWidth 
-            margin="normal"
-            value={closingTime} 
-            onChange={e => setClosingTime(e.target.value)} 
-            InputLabelProps={{ shrink: true }} 
-          />
-          <TextField 
-            label="Interval Between Bookings" 
-            type="time" 
-            fullWidth 
-            margin="normal"
-            value={intervalBetweenBookings} 
-            onChange={e => setIntervalBetweenBookings(e.target.value)} 
-            InputLabelProps={{ shrink: true }} 
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">Update</Button>
-        </DialogActions>
-      </Dialog>
+          {console.log('Dialog rendered', open)}
+          <DialogTitle>Update Restaurant</DialogTitle>
+          <DialogContent>
+            <TextField label="Name" fullWidth margin="normal" value={name} onChange={e => setName(e.target.value)} />
+            <TextField label="Address" fullWidth margin="normal" value={address} onChange={e => setAddress(e.target.value)} />
+            <TextField 
+              error={errors.time}
+              helperText={errors.time}
+              label="Opening Time" 
+              type="time" 
+              fullWidth 
+              margin="normal"
+              value={openingTime} 
+              onChange={e => setOpeningTime(e.target.value)} 
+              InputLabelProps={{ shrink: true }} 
+            />
+            <TextField 
+              error={errors.time}
+              helperText={errors.time}
+              label="Closing Time" 
+              type="time" 
+              fullWidth 
+              margin="normal"
+              value={closingTime} 
+              onChange={e => setClosingTime(e.target.value)} 
+              InputLabelProps={{ shrink: true }} 
+            />
+            <TextField 
+              error={errors.interval}
+              helperText={errors.interval}
+              label="Interval Between Bookings" 
+              type="time" 
+              fullWidth 
+              margin="normal"
+              value={intervalBetweenBookings} 
+              onChange={e => setIntervalBetweenBookings(e.target.value)} 
+              InputLabelProps={{ shrink: true }} 
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={handleUpdate} color="primary">Update</Button>
+          </DialogActions>
+        </Dialog>
     );
   };
 
@@ -207,6 +292,11 @@ function AdminRestaurants() {
     const [currentRestaurant, setCurrentRestaurant] = useState(null);
     const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
     const [restaurantToRemove, setRestaurantToRemove] = useState(null);
+    const navigation = useNavigate();
+
+    useEffect(() => {
+      console.log('openUpdateDialog state changed', openUpdateDialog);
+    }, [openUpdateDialog]);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -225,9 +315,7 @@ function AdminRestaurants() {
 
     const handleAddRestaurant = async (restaurant) => {
         setRestaurants(prevRestaurants => [...prevRestaurants, restaurant]);
-        const response = await addRestaurant(restaurant);
-        const text = await response.text();
-        console.log(text);
+
         setOpenAddDialog(false);
     };
 
@@ -238,7 +326,6 @@ function AdminRestaurants() {
           )
         );
 
-        await updateRestaurant(updatedRestaurant.id, updatedRestaurant);
         setOpenUpdateDialog(false);
     };
 
@@ -254,6 +341,7 @@ function AdminRestaurants() {
     useEffect(() => {
         async function fetchData() {
           const actualRestaurants = await getRestaurants();
+          console.log(actualRestaurants);
           setRestaurants(actualRestaurants);
         }
 
@@ -261,7 +349,7 @@ function AdminRestaurants() {
     }, []);
 
     return (
-        <Grid container spacing={3} style={{ maxWidth: '85%', margin: '0 auto' }}>
+      <Grid container spacing={3} style={{maxWidth: '85%', margin: '0 auto' }}>
         <Grid item xs={12}>
           <Typography variant="h5" style={{ marginBottom: '1rem', textAlign: 'center' }}>Manage Restaurants</Typography>
           <Box display="flex" justifyContent="flex-end" alignItems="center" marginBottom={2}>
@@ -285,7 +373,7 @@ function AdminRestaurants() {
           
         </Grid>
         <Grid item xs={12}>
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} >
             <Table>
               <TableHead>
                 <TableRow>
@@ -302,12 +390,18 @@ function AdminRestaurants() {
                   <TableRow key={restaurant.id}>
                     <TableCell>{restaurant.name}</TableCell>
                     <TableCell>{restaurant.address}</TableCell>
-                    <TableCell>{timeToHHMM(restaurant.openingTime)}</TableCell>
-                    <TableCell>{timeToHHMM(restaurant.closingTime)}</TableCell>
-                    <TableCell>{timeToHHMM(restaurant.intervalBetweenBookings)}</TableCell>
+                    <Hidden xsDown>
+                      <TableCell>{timeToHHMM(restaurant.openingTime)}</TableCell>
+                      <TableCell>{timeToHHMM(restaurant.closingTime)}</TableCell>
+                    </Hidden>
+
+                    <Hidden smDown>
+                      <TableCell>{timeToHHMM(restaurant.intervalBetweenBookings)}</TableCell>
+                    </Hidden>
                     <TableCell align='center'>
                       <Button startIcon={<EditIcon />} onClick={() => { setCurrentRestaurant(restaurant); setOpenUpdateDialog(true); }}>Edit</Button>
                       <Button startIcon={<DeleteIcon />} onClick={() => handleOpenRemoveDialog(restaurant.id)}>Delete</Button>
+                      <Button startIcon={<EditIcon />} onClick={() => { navigation(`/admin/restaurants/${restaurant.id}/tables`) }}>Manage Tables</Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -337,5 +431,5 @@ function AdminRestaurants() {
       </Grid>
     );
   }
-  
+
   export default AdminRestaurants;

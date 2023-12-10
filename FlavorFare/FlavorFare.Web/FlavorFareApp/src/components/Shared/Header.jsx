@@ -26,6 +26,7 @@ function Header() {
   const navigation = useNavigate();
   const { isAuthenticated, role, refreshToken, changeUserInformationToLoggedOut } = useUser();
 
+  console.log(role);
   const handleNavigation = (url) => {
     console.log(`going to ${url}`);
     navigation(url);
@@ -40,11 +41,9 @@ function Header() {
   if (isAuthenticated) {
     settings.push({ name: 'Your reservations', route: 'user/reservations' });
   
-    if (typeof role === 'string' && role.toLowerCase().includes('admin')) {
+    if (role.includes('Admin')) {
       settings.push(
         { name: 'Manage restaurants', route: 'admin/restaurants' },
-        { name: 'Manage tables', route: 'manage-tables' },
-        { name: 'Manage reservations', route: 'manage-reservations' }
       );
     }
   

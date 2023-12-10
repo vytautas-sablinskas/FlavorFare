@@ -15,6 +15,10 @@ const endpoints = {
     UPDATE_RESERVATION: `${BASE_URL}/restaurant/:restaurantId/table/:tableId/reservation/:reservationId`,
     REMOVE_RESERVATION: `${BASE_URL}/restaurant/:restaurantId/table/:tableId/reservation/:reservationId`,
 
+    ADD_RESTAURANT_TABLE: `${BASE_URL}/restaurant/:restaurantId/table`,
+    UPDATE_RESTAURANT_TABLE: `${BASE_URL}/restaurant/:restaurantId/table/:tableId`,
+    REMOVE_RESTAURANT_TABLE: `${BASE_URL}/restaurant/:restaurantId/table/:tableId`,
+
     LOGIN: `${BASE_URL}/login`,
     REGISTER: `${BASE_URL}/register`,
     LOGOUT: `${BASE_URL}/logout`,
