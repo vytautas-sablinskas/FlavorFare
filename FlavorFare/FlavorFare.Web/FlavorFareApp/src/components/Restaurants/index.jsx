@@ -1,11 +1,11 @@
 ﻿
 import React, { useState, useEffect } from 'react';
 import { getRestaurants } from '../../services/RestaurantService';
-import { InputBase, Paper, Card, CardContent, Rating, CardMedia, Typography, Button, Box, Grid, Container, useTheme, useMediaQuery } from '@mui/material';
+import { InputBase, Paper, Card, CardContent, Rating, CardMedia, Typography, Button, Box, Grid, Container, useTheme, useMediaQuery, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import { grey } from '@mui/material/colors';
-import '../../styles/restaurants.css';
+import LoadingSpinner from '../Shared/LoadingSpinner';
 
 function Restaurants() {
   const [restaurants, setRestaurants] = useState([]);
@@ -43,7 +43,7 @@ function Restaurants() {
     setRestaurants(enhancedData);
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 250);
   };
 
   const renderRestaurantsCards = (restaurants) => {
@@ -56,10 +56,10 @@ function Restaurants() {
 
     return (
         <Container maxWidth="lg">
-          <Grid container spacing={4} justifyContent={justifyContentValue} alignItems={isSmallScreen ? "center" : "flex-start"}>
+          <Grid container spacing={3} justifyContent={justifyContentValue} alignItems={isSmallScreen ? "center" : "flex-start"}>
               {restaurants.map(restaurant => (
-                  <Grid item xs={12} sm={4} key={restaurant.id} style={{ flex: 1 }}>
-                      <Card sx={{ margin: '0 auto', height: '100%', width: '100%', border: `1px solid ${grey[200]}`  }}>
+                  <Grid item xs={12} sm={4} key={restaurant.id}>
+                      <Card sx={{ margin: '0 auto', height: '100%', width: '100%', border: `1px solid ${grey[300]}`  }}>
                           <CardMedia
                               component="img"
                               height="140"
@@ -115,42 +115,49 @@ function Restaurants() {
               );
           };
 
-        return (
-          <div>
-            <Typography 
-              variant="h2" 
-              id="tableLabel" 
-              gutterBottom 
-              textAlign="center"
-              sx={{ marginTop: '4rem' }}
-            >
-              Discover & Book the Best Restaurants in Town
-            </Typography>
-            <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                <Grid item xs={12} md={4} style={{ display: 'flex' }}>
-                    <Paper 
-                        sx={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            padding: '8px 8px', 
-                            margin: '16px',
-                            flex: 1,
-                        }}
-                    >
-                        <SearchIcon />
-                        <InputBase
-                            placeholder="Search by name or address..."
-                            onChange={onSearchChange}
-                            fullWidth
-                        />
-                    </Paper>
+          return (
+            loading ? 
+            <LoadingSpinner />
+             : 
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1
+            }}>
+                <Typography 
+                    variant="h2" 
+                    id="tableLabel" 
+                    gutterBottom 
+                    textAlign="center"
+                    sx={{ marginTop: '4rem' }}
+                >
+                <p style={{margin: 0, fontFamily: 'Alegreya, sans-serif'}}>Book Restaurants</p>
+                </Typography>
+                <Grid container justifyContent="center" alignItems="center" spacing={2}>
+                    <Grid item xs={12} md={4} style={{ display: 'flex' }}>
+                        <Paper 
+                            sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                padding: '8px 8px', 
+                                margin: '16px',
+                                flex: 1,
+                            }}
+                        >
+                            <SearchIcon />
+                            <InputBase
+                                placeholder="Search by name or address..."
+                                onChange={onSearchChange}
+                                fullWidth
+                            />
+                        </Paper>
+                    </Grid>
                 </Grid>
-            </Grid>
-            {loading
-              ? <Typography variant="h2" textAlign="center" className="fade-in"><em>Loading...</em></Typography>
-              : renderRestaurantsCards(filteredRestaurants(), isSmallScreen)}
-    </div>
-  );
+                {renderRestaurantsCards(filteredRestaurants(), isSmallScreen)}
+            </div>
+        );        
 }
 
 export default Restaurants;

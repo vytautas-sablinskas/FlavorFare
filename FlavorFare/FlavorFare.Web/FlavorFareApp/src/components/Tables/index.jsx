@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Typography, Box, CircularProgress, Paper, Select, MenuItem, FormControl, TextField, InputLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
+import { Container, Typography, Box, CircularProgress, Paper, Select, MenuItem, FormControl, TextField, InputLabel, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, selectClasses } from '@mui/material';
 import { getTables } from '../../services/TableService';
 import { addReservation, getReservations } from '../../services/ReservationService';
 import { getRestaurantById } from '../../services/RestaurantService';
@@ -8,6 +8,7 @@ import { refreshAccessToken } from '../../services/AuthenticationService';
 import SnackbarContext from '../Contexts/SnackbarContext';
 import { useUser } from '../Contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../Shared/LoadingSpinner';
 
 function Tables(props) {   
     const [loading, setLoading] = useState(true);
@@ -39,10 +40,10 @@ function Tables(props) {
         checkTime: 10,
         availableSlots: {},
         availableTimes: [],
-        startTime: 1,
+        startTime: -1,
         endTime: 10,
         interval: 1,
-        selectedTime: 10,
+        selectedTime: "-1:00 - 00:00",
         isAuthenticated: false,
         restaurantName: '',
         extraInformation: ''
@@ -88,18 +89,6 @@ function Tables(props) {
         const minutes = Math.round((decimal_time - hours) * 60);
         return hours * 60 + minutes;
     };
-
-    const formatTimeInMinutes = (minutes) => {
-        const hours = Math.floor(minutes / 60);
-        const remaining_minutes = minutes % 60;
-        return `${String(hours).padStart(2, '0')}:${String(remaining_minutes).padStart(2, '0')}`;
-    }; 
-
-    const formatTimeInDecimalHours = (decimalHours) => {
-        const hours = Math.floor(decimalHours);
-        const minutes = Math.round((decimalHours - hours) * 60);
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-    }
 
     const handleExtraInfoChange = (e) => {
         setState(prevState => ({
@@ -170,7 +159,7 @@ function Tables(props) {
                 return isSizeMatch && isAvailable;
             }).length;
         });
-      
+
         return availableTables;
     }       
     
@@ -265,7 +254,6 @@ function Tables(props) {
 
     useEffect(() => {
         setLoading(true);
-        
         const fetchData = async () => {
             await tryFetchingRestaurant(restaurantId);
             await tryFetchingRestaurantTables(restaurantId);
@@ -273,8 +261,6 @@ function Tables(props) {
         };
 
         fetchData();
-
-        setLoading(false);
     }, [restaurantId, state.reservationDate]);
 
     useEffect(() => {
@@ -282,7 +268,13 @@ function Tables(props) {
     }, [isAuthenticated]);
     
     useEffect(() => {
+        setLoading(true);
         calculateAvailableSlots();
+
+        const dataWasLoaded = state.selectedTime !== "-1:00 - 00:00";
+        if (dataWasLoaded) {
+            setLoading(false);
+        }
     }, [state.tables, state.reservations]);    
 
     const formatDateTimeFromSimpleTime = (date, simpleTime) => {
@@ -311,108 +303,99 @@ function Tables(props) {
     const noAvailableTimes = availableTimes.length === 0;
     
     return (
-        <Container maxWidth="sm" style={{ marginTop: '40px' }}>
-            <Paper elevation={3} style={{ padding: '20px' }}>
-                {loading ? (
-                    <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
-                        <CircularProgress />
-                    </Box>
-                ) : (
-                    <>
-                        <Typography variant="h3" align="center" gutterBottom>{state.restaurantName}</Typography>
-                        <Typography variant="h4" align="center" gutterBottom>Select a Time Slot</Typography>
+        loading ? (
+            <LoadingSpinner />
+        ) : (
+            <Container maxWidth="sm" style={{ marginTop: '40px' }}>
+                <Paper elevation={3} style={{ padding: '20px' }}>
+                    <Typography variant="h3" align="center" gutterBottom>{state.restaurantName}</Typography>
+                    <Typography variant="h4" align="center" gutterBottom>Select a Time Slot</Typography>
     
-                        {!noAvailableTimes ? (
-                            <>
-                                <Box display="flex" flexDirection="column" alignItems="center" marginBottom={3}>
-                                    <FormControl fullWidth margin="normal">
-                                        <TextField
-                                            type="date"
-                                            value={state.reservationDate}
-                                            onChange={(e) => handleDateChange(e)}
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                            inputProps={{
-                                                min: minDate,
-                                                max: maxDate
-                                            }}
-                                            label="Reservation Date"
-                                        />
-                                    </FormControl>
-                                    <FormControl variant="outlined" style={{ width: '100%', marginBottom: '20px' }}>
-                                        <InputLabel>Available Times</InputLabel>
-                                        <Select value={state.selectedTime} onChange={handleTimeChange} label="Available Times">
-                                            {availableTimes.sort((a, b) => parseFloat(a) - parseFloat(b)).map(time => (
-                                                <MenuItem key={time} value={time}>
-                                                    { time }
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                </Box>
-    
-                                <Box marginTop={3} marginBottom={3}>
+                    {!noAvailableTimes ? (
+                        <>
+                            <Box display="flex" flexDirection="column" alignItems="center" marginBottom={3}>
+                                <FormControl fullWidth margin="normal">
                                     <TextField
-                                        fullWidth
-                                        multiline
-                                        rows={4}
-                                        variant="outlined"
-                                        label="Extra Information to Staff"
-                                        value={state.extraInfo}
-                                        onChange={handleCharCount}
-                                        placeholder="Write any additional notes for the staff here..."
-                                        inputProps={{ maxLength: 100 }}
-                                        helperText={`${charCount}/100`}
+                                        type="date"
+                                        value={state.reservationDate}
+                                        onChange={(e) => handleDateChange(e)}
+                                        InputLabelProps={{ shrink: true }}
+                                        inputProps={{ min: minDate, max: maxDate }}
+                                        label="Reservation Date"
                                     />
-                                </Box>
-                                    
-                                <Typography variant="h6" align="center" gutterBottom>Table Availability</Typography>
+                                </FormControl>
+                                <FormControl variant="outlined" style={{ width: '100%', marginBottom: '20px' }}>
+                                    <InputLabel>Available Times</InputLabel>
+                                    <Select value={state.selectedTime} onChange={handleTimeChange} label="Available Times">
+                                        {availableTimes.sort((a, b) => parseFloat(a) - parseFloat(b)).map(time => (
+                                            <MenuItem key={time} value={time}>
+                                                {time}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Box>
     
-                                <TableContainer component={Paper}>
-                                    <Table size="small">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Table Size</TableCell>
-                                                <TableCell align="left">Available</TableCell>
-                                                {isAuthenticated && <TableCell align="right">Action</TableCell>}
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {state.availableSlots[convertSimpleToISOTimeRange(state.selectedTime)] &&
-                                                Object.entries(state.availableSlots[convertSimpleToISOTimeRange(state.selectedTime)]).map(([size, count]) => (
-                                                    <TableRow key={size}>
-                                                        <TableCell component="th" scope="row">{size}</TableCell>
-                                                        <TableCell align="left">
-                                                            {count <= 0 ? 'None' : count === 1 ? `${count} table` : `${count} tables`}
-                                                        </TableCell>
-                                                        {isAuthenticated && (
-                                                            count > 0 ? (
-                                                                <TableCell align="right">
-                                                                    {isTimePassed(state.reservationDate, state.selectedTime) ? (
-                                                                        <Typography color="textSecondary">Unavailable</Typography>
-                                                                    ) : (
-                                                                        <Button variant="contained" color="primary" onClick={() => handleBooking(size)}>Book it</Button>
-                                                                    )}
-                                                                </TableCell>
-                                                            ) : (
-                                                                <TableCell align="right"></TableCell>
-                                                            )
-                                                        )}
-                                                    </TableRow>
-                                                ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </>
-                        ) : (
-                            <Typography variant="h6" align="center" gutterBottom>Not available for booking</Typography>
-                        )}
-                    </>
-                )}
-            </Paper>
-        </Container>
-    );    
+                            <Box marginTop={3} marginBottom={3}>
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    variant="outlined"
+                                    label="Extra Information to Staff"
+                                    value={state.extraInfo}
+                                    onChange={handleCharCount}
+                                    placeholder="Write any additional notes for the staff here..."
+                                    inputProps={{ maxLength: 100 }}
+                                    helperText={`${charCount}/100`}
+                                />
+                            </Box>
+    
+                            <Typography variant="h6" align="center" gutterBottom>Table Availability</Typography>
+    
+                            <TableContainer component={Paper}>
+                                <Table size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Table Size</TableCell>
+                                            <TableCell align="left">Available</TableCell>
+                                            {isAuthenticated && <TableCell align="right">Action</TableCell>}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {state.availableSlots[convertSimpleToISOTimeRange(state.selectedTime)] &&
+                                            Object.entries(state.availableSlots[convertSimpleToISOTimeRange(state.selectedTime)]).map(([size, count]) => (
+                                                <TableRow key={size}>
+                                                    <TableCell component="th" scope="row">{size}</TableCell>
+                                                    <TableCell align="left">
+                                                        {count <= 0 ? 'None' : count === 1 ? `${count} table` : `${count} tables`}
+                                                    </TableCell>
+                                                    {isAuthenticated && (
+                                                        count > 0 ? (
+                                                            <TableCell align="right">
+                                                                {isTimePassed(state.reservationDate, state.selectedTime) ? (
+                                                                    <Typography color="textSecondary">Unavailable</Typography>
+                                                                ) : (
+                                                                    <Button variant="contained" color="primary" onClick={() => handleBooking(size)}>Book it</Button>
+                                                                )}
+                                                            </TableCell>
+                                                        ) : (
+                                                            <TableCell align="right"></TableCell>
+                                                        )
+                                                    )}
+                                                </TableRow>
+                                            ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </>
+                    ) : (
+                        <Typography variant="h6" align="center" gutterBottom>Not available for booking</Typography>
+                    )}
+                </Paper>
+            </Container>
+        )
+    );        
 }
 
 export default Tables;

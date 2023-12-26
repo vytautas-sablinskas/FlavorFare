@@ -11,14 +11,11 @@ import { refreshAccessToken } from '../../services/AuthenticationService';
 import { useUser } from '../Contexts/UserContext';
 import SnackbarContext from '../Contexts/SnackbarContext';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../Shared/LoadingSpinner';
 
 const timeToHHMM = (isoTime) => {
     if (!isoTime) return "00:00";
     return isoTime.substr(0, 5);
-};
-
-const hhmmToISO = (time) => {
-    return `1970-01-01T${time}:00`;
 };
 
 const timeDifference = (start, end) => {
@@ -290,6 +287,7 @@ function AdminRestaurants() {
     const [currentRestaurant, setCurrentRestaurant] = useState(null);
     const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
     const [restaurantToRemove, setRestaurantToRemove] = useState(null);
+    const [isLoading, setLoading] = useState(true);
     const navigation = useNavigate();
 
     useEffect(() => {
@@ -336,18 +334,24 @@ function AdminRestaurants() {
       );
 
     useEffect(() => {
-        async function fetchData() {
-          const actualRestaurants = await getRestaurants();
-          setRestaurants(actualRestaurants);
-        }
+      async function fetchData() {
+        setLoading(true);
 
-        fetchData();
+        const actualRestaurants = await getRestaurants();
+        setRestaurants(actualRestaurants);
+    
+        setLoading(false);
+      }
+    
+      fetchData();
     }, []);
 
     return (
-      <Grid container spacing={3} style={{maxWidth: '85%', margin: '0 auto' }}>
-        <Grid item xs={12}>
-          <Typography variant="h5" style={{ marginBottom: '1rem', textAlign: 'center' }}>Manage Restaurants</Typography>
+      isLoading ? 
+      <LoadingSpinner /> : 
+      <Grid container spacing={3} style={{maxWidth: '85%', margin: '0 auto', padding: '0', display: "flex", justifyContent: "center" }}>
+        <Grid>
+        <Typography variant="h5" style={{ marginBottom: '1rem', textAlign: 'center', marginTop: '2rem' }}>Manage Restaurants</Typography>
           <Box display="flex" justifyContent="flex-end" alignItems="center" marginBottom={2}>
             <Button 
                 variant="contained" 
@@ -366,10 +370,7 @@ function AdminRestaurants() {
             onChange={handleSearchChange}
             style={{ marginBottom: '1rem' }}
           />
-          
-        </Grid>
-        <Grid item xs={12}>
-          <TableContainer component={Paper} >
+          <TableContainer component={Paper} style={{padding: "0"}}>
             <Table>
               <TableHead>
                 <TableRow>

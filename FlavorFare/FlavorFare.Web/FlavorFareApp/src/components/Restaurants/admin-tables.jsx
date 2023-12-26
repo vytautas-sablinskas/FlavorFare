@@ -11,6 +11,7 @@ import { checkTokenValidity } from '../../utils/jwtUtils';
 import { refreshAccessToken } from '../../services/AuthenticationService';
 import { useUser } from '../Contexts/UserContext';
 import SnackbarContext from '../Contexts/SnackbarContext';
+import LoadingSpinner from '../Shared/LoadingSpinner';
 
 const AddTableDialog = ({ open, onClose, onAdd, restaurantId }) => {
     const { changeUserInformationToLoggedIn, changeUserInformationToLoggedOut } = useUser();
@@ -171,6 +172,7 @@ function AdminTables() {
     const navigation = useNavigate();
     const { changeUserInformationToLoggedIn, changeUserInformationToLoggedOut } = useUser();
     const openSnackbar = useContext(SnackbarContext);
+    const [isLoading, setLoading] = useState(true);
 
     const handleAddTable = (table) => {
         setTables(prevTables => [...prevTables, table.data]);
@@ -212,18 +214,24 @@ function AdminTables() {
 
     useEffect(() => {
         async function fetchData() {
+          setLoading(true);
+
           const actualTables = await getTables(restaurantId);
           setTables(actualTables);
+
+          setLoading(false);
         }
 
         fetchData();
     }, []);
 
     return (
+      isLoading ?
+      <LoadingSpinner /> :
       <Grid container spacing={3} style={{ maxWidth: '85%', margin: '0 auto' }}>
         <Grid item xs={12}>
           <Typography variant="h5" style={{ marginBottom: '1rem', textAlign: 'center' }}>Manage Tables</Typography>
-          <Box display="flex" justifyContent="flex-end" alignItems="center" marginBottom={2}>
+            <Box display="flex" justifyContent="flex-end" alignItems="center" marginBottom={2}>
             <Button 
                 variant="contained" 
                 color="primary" 
@@ -233,8 +241,6 @@ function AdminTables() {
                 Add Table
             </Button>
           </Box>
-        </Grid>
-        <Grid item xs={12}>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>

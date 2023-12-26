@@ -7,6 +7,7 @@
     import { refreshAccessToken } from '../../services/AuthenticationService';
     import { useUser } from '../Contexts/UserContext';
     import SnackbarContext from '../Contexts/SnackbarContext';
+import LoadingSpinner from '../Shared/LoadingSpinner';
 
     function UserReservations() {
         const [sortOrder, setSortOrder] = useState('asc');
@@ -19,9 +20,12 @@
         const [openUpdateModal, setOpenUpdateModal] = useState(false);
         const [openRemoveModal, setOpenRemoveModal] = useState(false);
         const [currentReservation, setCurrentReservation] = useState(null);
+        const [isLoading, setLoading] = useState(true);
 
         const tryFetchingUserReservations = async () => {
             const accessToken = localStorage.getItem('accessToken');
+            setLoading(true);
+
             if (!checkTokenValidity(accessToken)) {
                 const result = await refreshAccessToken();
                 if (!result.success) {
@@ -50,6 +54,7 @@
               });              
               
             setReservations(modifiedData);
+            setLoading(false);
         }
 
         useEffect(() => {
@@ -60,8 +65,6 @@
             const [value, setValue] = useState(0);
             return () => setValue(value + 1);
         }
-
-        const forceUpdate = useForceUpdate();
 
         const formatDate = (isoDate) => {
             const date = new Date(isoDate);
@@ -190,6 +193,8 @@
         };
 
         return (
+            isLoading ?
+            <LoadingSpinner /> :
             <div style={{ overflowX: 'auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
                     <FormControl variant="outlined" style={{ margin: '0 20px' }}>

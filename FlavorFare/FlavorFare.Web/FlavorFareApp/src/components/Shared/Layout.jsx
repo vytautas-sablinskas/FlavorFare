@@ -9,7 +9,7 @@ export function Layout({ children }) {
             <UserContextProvider>
                 <SnackbarProvider>
                     <Header />
-                    <main style={{ flex: 1 }}>
+                    <main style={{ flex: 1, display: 'flex' }}>
                         {children}
                     </main>
                     <Footer />
