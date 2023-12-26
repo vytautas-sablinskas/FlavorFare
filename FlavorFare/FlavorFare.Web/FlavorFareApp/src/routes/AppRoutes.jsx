@@ -5,6 +5,7 @@ import LoginPage from "../components/Authentication/LoginPage";
 import RegistrationPage from "../components/Authentication/RegisterPage";
 import AdminRestaurants from "../components/Restaurants/admin-restaurant";
 import AdminTables from "../components/Restaurants/admin-tables";
+import PageNotFound from "../components/Shared/PageNotFound";
 
 const AppRoutes = [
   {
@@ -34,6 +35,10 @@ const AppRoutes = [
   {
     path: '/admin/restaurants/:restaurantId/tables',
     element: <AdminTables />
+  },
+  {
+    path: '*',
+    element: <PageNotFound />
   }
 ];
 
