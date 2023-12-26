@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import UserContext from '../Contexts/UserContext';
 
 const UserContextProvider = ({ children }) => {
-    // Initialize state using values from localStorage
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
     const [role, setRole] = useState(localStorage.getItem('role') || 'none');
     const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || 'none');

@@ -210,7 +210,7 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
           address,
           openingTime: openingTime + ":00",
           closingTime: closingTime + ":00",
-          intervalBetweenBookings: intervalBetweenBookings,
+          intervalBetweenBookings: intervalBetweenBookings + ":00",
         };
 
         const response = await updateRestaurant(restaurant.id, restaurantToUpdate);

@@ -34,6 +34,8 @@ export const addRestaurant = async (restaurant) => {
 export const updateRestaurant = async (restaurantId, updatedData) => {
     const token = localStorage.getItem('accessToken');
     const url = endpoints.UPDATE_RESTAURANT.replace(':restaurantId', restaurantId)
+    console.log(updatedData);
+
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
