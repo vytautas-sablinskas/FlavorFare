@@ -225,23 +225,51 @@ import LoadingSpinner from '../Shared/LoadingSpinner';
                 </div>
                 <TableContainer component={Paper} style={{ maxWidth: '85%', minWidth: '300px', width: 'auto', margin: '50px auto 0 auto' }}>
                     <Table style={{ tableLayout: 'fixed' }} key={`${filterStatus}-${sortOrder}`}>
-                        <TableHead>
-                            <TableRow style={{ display: 'flex' }}>
-                                <TableCell style={{ padding: '8px', flex: 1 }}>Restaurant Name</TableCell>
-                                <TableCell style={{ padding: '8px', flex: 1 }}>Start Time</TableCell>
-                                <TableCell style={{ padding: '8px', flex: 1 }}>End Time</TableCell>
-                                <TableCell style={{ padding: '8px', flex: 3 }}>Extra Information</TableCell>
-                                <TableCell align='center' style={{ padding: '8px', flex: 1 }}>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
+                    <TableHead>
+                    <TableRow style={{ display: 'flex' }}>
+                      <TableCell style={{ padding: '8px', flexBasis: '20%', flexShrink: 0 }}>Restaurant Name</TableCell>
+                      <TableCell style={{ padding: '8px', flexBasis: '15%', flexShrink: 0 }}>Start Time</TableCell>
+                      <TableCell style={{ padding: '8px', flexBasis: '15%', flexShrink: 0 }}>End Time</TableCell>
+                      <TableCell style={{ padding: '8px', flexBasis: '20%', flexShrink: 0 }}>Extra Information</TableCell>
+                      <TableCell style={{ padding: '8px', flexBasis: '10%', flexShrink: 0, textAlign: 'center' }}>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
                         <TableBody>
                             {sortedReservations.map(reservation => (
                                 <TableRow key={reservation.id} style={{ display: 'flex' }}>
-                                    <TableCell style={{ padding: '8px', flex: 1 }}>{reservation.restaurantName}</TableCell>
-                                    <TableCell style={{ padding: '8px', flex: 1 }}>{formatDate(reservation.startTime)}</TableCell>
-                                    <TableCell style={{ padding: '8px', flex: 1 }}>{formatDate(reservation.endTime)}</TableCell>
-                                    <TableCell style={{ padding: '8px', flex: 3 }}>{reservation.extraInformation.trim()}</TableCell>
-                                    <TableCell style={{ padding: '8px', flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <TableCell style={{ padding: '8px', flexBasis: '20%', flexShrink: 0 }}>
+                                        {reservation.restaurantName}
+                                    </TableCell>
+                                    <TableCell style={{ padding: '8px', flexBasis: '15%', flexShrink: 0 }}>
+                                        {formatDate(reservation.startTime)}
+                                    </TableCell>
+                                    <TableCell style={{ padding: '8px', flexBasis: '15%', flexShrink: 0 }}>
+                                        {formatDate(reservation.endTime)}
+                                    </TableCell>
+                                    <TableCell
+                                        style={{
+                                        padding: '8px',
+                                        flexBasis: '20%',
+                                        flexShrink: 0,
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        }}
+                                    >
+                                        {reservation.extraInformation.trim().length > 50
+                                        ? reservation.extraInformation.trim().substring(0, 50) + '...'
+                                        : reservation.extraInformation.trim()}
+                                    </TableCell>
+                                    <TableCell
+                                        style={{
+                                        padding: '8px',
+                                        flexBasis: '10%',
+                                        flexShrink: 0,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        }}
+                                    >
                                     {isExpired(reservation.startTime) ? 
                                         <BlockIcon color="disabled" /> : 
                                         (

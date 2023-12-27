@@ -188,6 +188,16 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
       return Object.keys(newErrors).length === 0;
     };
 
+    const formatBookingInterval = (interval) => {
+      if (/^\d{2}:\d{2}:\d{2}$/.test(interval)) {
+        return interval;
+      } else if (/^\d{2}:\d{2}$/.test(interval)) {
+        return interval + ":00";
+      } else {
+        return "00:00:00";
+      }
+    }
+
     const handleUpdate = async () => {
       if (validate()) {
         const accessToken = localStorage.getItem('accessToken');
@@ -203,13 +213,17 @@ const AddRestaurantDialog = ({ open, onClose, onAdd }) => {
           changeUserInformationToLoggedIn(result.data.accessToken, result.data.refreshToken);
         };
 
+
+
         const restaurantToUpdate = {
           name,
           address,
           openingTime: openingTime + ":00",
           closingTime: closingTime + ":00",
-          intervalBetweenBookings: intervalBetweenBookings + ":00",
+          intervalBetweenBookings: formatBookingInterval(intervalBetweenBookings),
         };
+
+        console.log(restaurantToUpdate);
 
         const response = await updateRestaurant(restaurant.id, restaurantToUpdate);
           

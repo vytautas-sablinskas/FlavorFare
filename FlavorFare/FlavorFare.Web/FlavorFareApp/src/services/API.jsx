@@ -1,4 +1,4 @@
-const BASE_URL = "https://plankton-app-c63ne.ondigitalocean.app/api/v1";
+const BASE_URL = "https://localhost:7175/api/v1";
 
 const endpoints = {
     ALL_RESTAURANTS: `${BASE_URL}/restaurant`,
