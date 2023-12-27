@@ -12,6 +12,7 @@ import { refreshAccessToken } from '../../services/AuthenticationService';
 import { useUser } from '../Contexts/UserContext';
 import SnackbarContext from '../Contexts/SnackbarContext';
 import LoadingSpinner from '../Shared/LoadingSpinner';
+import PageNotFound from '../Shared/PageNotFound';
 
 const AddTableDialog = ({ open, onClose, onAdd, restaurantId }) => {
     const { changeUserInformationToLoggedIn, changeUserInformationToLoggedOut } = useUser();
@@ -170,7 +171,7 @@ function AdminTables() {
     const [tableToRemove, setTableToRemove] = useState(null);
     const { restaurantId } = useParams();
     const navigation = useNavigate();
-    const { changeUserInformationToLoggedIn, changeUserInformationToLoggedOut } = useUser();
+    const { isAuthenticated, role, changeUserInformationToLoggedIn, changeUserInformationToLoggedOut } = useUser();
     const openSnackbar = useContext(SnackbarContext);
     const [isLoading, setLoading] = useState(true);
 
@@ -224,6 +225,10 @@ function AdminTables() {
 
         fetchData();
     }, []);
+
+    if (!isAuthenticated || !role.includes('Admin')) {
+        return <PageNotFound />
+    }
 
     return (
       isLoading ?

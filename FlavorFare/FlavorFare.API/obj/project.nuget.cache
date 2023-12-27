@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gRlhCecQOOcafx7TfAVZ0B1ifam+JdQLy/lZqP5AMMuru9kcttXcoaHMnmF36oKB3n+D5RLAHqOkvBqIz0Id6w==",
+  "dgSpecHash": "0IT3qyjGXYn3f2cBbb8Reb8NqKjWysJRCZbkSrCmuxHdh976GEV4+6aToiJW8/C0JfcA/13JXh3+tRmAEB7muQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
+  "projectFilePath": "C:\\Users\\Donatas\\source\\repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Donatas\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Donatas\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

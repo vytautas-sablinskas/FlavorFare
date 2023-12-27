@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj": {}
+    "C:\\Users\\Donatas\\source\\repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj": {
+    "C:\\Users\\Donatas\\source\\repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
+        "projectUniqueName": "C:\\Users\\Donatas\\source\\repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
         "projectName": "FlavorFare.API",
-        "projectPath": "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
+        "projectPath": "C:\\Users\\Donatas\\source\\repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
         "packagesPath": "C:\\Users\\Donatas\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\obj\\",
+        "outputPath": "C:\\Users\\Donatas\\source\\repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Donatas\\AppData\\Roaming\\NuGet\\NuGet.Config",

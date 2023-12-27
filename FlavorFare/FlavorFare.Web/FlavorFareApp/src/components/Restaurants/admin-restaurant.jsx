@@ -12,6 +12,7 @@ import { useUser } from '../Contexts/UserContext';
 import SnackbarContext from '../Contexts/SnackbarContext';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../Shared/LoadingSpinner';
+import PageNotFound from '../Shared/PageNotFound';
 
 const timeToHHMM = (isoTime) => {
     if (!isoTime) return "00:00";
@@ -289,6 +290,7 @@ function AdminRestaurants() {
     const [restaurantToRemove, setRestaurantToRemove] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const navigation = useNavigate();
+    const { isAuthenticated, role } = useUser();
 
     useEffect(() => {
     }, [openUpdateDialog]);
@@ -345,6 +347,10 @@ function AdminRestaurants() {
     
       fetchData();
     }, []);
+
+    if (!isAuthenticated || !role.includes('Admin')) {
+      return <PageNotFound />
+    }
 
     return (
       isLoading ? 
