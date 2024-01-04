@@ -3117,19 +3117,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Donatas\\.nuget\\packages\\": {}
+    "C:\\Users\\Vytautas\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
+      "projectUniqueName": "C:\\Users\\Vytautas\\Desktop\\tes\\FlavorFare\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
       "projectName": "FlavorFare.API",
-      "projectPath": "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
-      "packagesPath": "C:\\Users\\Donatas\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Donatas\\Source\\Repos\\FlavorFare2\\FlavorFare\\FlavorFare.API\\obj\\",
+      "projectPath": "C:\\Users\\Vytautas\\Desktop\\tes\\FlavorFare\\FlavorFare\\FlavorFare.API\\FlavorFare.API.csproj",
+      "packagesPath": "C:\\Users\\Vytautas\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Vytautas\\Desktop\\tes\\FlavorFare\\FlavorFare\\FlavorFare.API\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Donatas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Vytautas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3137,7 +3142,8 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://sitecore.myget.org/F/sc-packages/api/v3/index.json": {}
       },
       "frameworks": {
         "net7.0": {
@@ -3223,7 +3229,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }
